@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sonic Insights - Audio Analysis Platform</title>
+    <title>Sonic Insights - Audio Intelligence Platform</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -347,6 +347,275 @@
             margin-top: 6px; font-weight: 500;
         }
 
+        /* Audio Player */
+        .audio-player-card {
+            grid-column: 1 / -1;
+            background: var(--bg-secondary);
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .audio-player-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .player-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .channel-toggle {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .channel-btn {
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .channel-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px var(--shadow-lg);
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .play-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 16px var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px var(--shadow-lg);
+        }
+
+        .play-btn:active {
+            transform: scale(0.95);
+        }
+
+        .play-btn.playing::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            animation: ripple 1.5s ease-out infinite;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .time-display {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 120px;
+        }
+
+        .waveform-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .waveform {
+            width: 100%;
+            height: 80px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 0 8px;
+            cursor: pointer;
+        }
+
+        .waveform-bar {
+            flex: 1;
+            background: var(--border);
+            border-radius: 2px;
+            transition: all 0.2s;
+            min-height: 4px;
+            position: relative;
+        }
+
+        .waveform-bar.active {
+            background: var(--gradient-1);
+        }
+
+        .waveform-bar.playing {
+            animation: barPulse 0.8s ease-in-out infinite;
+        }
+
+        @keyframes barPulse {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.2); }
+        }
+
+        .progress-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: rgba(139, 92, 246, 0.2);
+            transition: width 0.1s linear;
+            pointer-events: none;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .volume-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .volume-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .volume-slider {
+            width: 100px;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+        }
+
+        .audio-visualizer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 40px;
+            margin-top: 20px;
+        }
+
+        .visualizer-bar {
+            width: 4px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+            transition: height 0.1s;
+        }
+
+        .channel-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .channel-indicator.left { color: #ec4899; background: rgba(236, 72, 153, 0.1); }
+        .channel-indicator.right { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+
         .batch-results { margin-top: 40px; }
 
         .batch-results h2 {
@@ -578,10 +847,10 @@
                     <span>by Gaurav Patil</span>
                 </div>
                 <div class="footer-links">
-                    <!-- <a href="#" class="footer-link">🌟 Star on GitHub</a>
+                    <a href="#" class="footer-link">🌟 Star on GitHub</a>
                     <a href="#" class="footer-link">💼 LinkedIn</a>
                     <a href="#" class="footer-link">🐦 Twitter</a>
-                    <a href="#" class="footer-link">📧 Contact</a> -->
+                    <a href="#" class="footer-link">📧 Contact</a>
                 </div>
                 <div class="footer-copyright">
                     © 2024 Sonic Insights. Built for audio professionals.
@@ -785,7 +1054,9 @@
                         fileSize: formatFileSize(file.size),
                         loudness: `${loudness.toFixed(2)} dBFS`,
                         quality: quality,
-                        timestamp: new Date().toISOString()
+                        timestamp: new Date().toISOString(),
+                        audioUrl: url,
+                        audioBuffer: audioBuffer
                     };
 
                     currentAnalysis = analysis;
@@ -795,19 +1066,224 @@
                     showLoading(false);
                     showNotification('success', 'Analysis completed successfully!');
                     showHomeButton();
-                    URL.revokeObjectURL(url);
                 } catch (error) {
                     showLoading(false);
                     showNotification('error', 'Analysis failed: ' + error.message);
-                    URL.revokeObjectURL(url);
                 }
             });
 
             audio.addEventListener('error', () => {
                 showLoading(false);
                 showNotification('error', 'Failed to load audio file');
-                URL.revokeObjectURL(url);
             });
+        }
+
+        // Audio Player Functions
+        let audioPlayer = null;
+        let audioContext = null;
+        let sourceNode = null;
+        let splitter = null;
+        let leftGain = null;
+        let rightGain = null;
+        let analyser = null;
+        let animationFrame = null;
+        let currentChannel = 'stereo';
+
+        function initAudioPlayer(analysis) {
+            audioPlayer = new Audio(analysis.audioUrl);
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            sourceNode = audioContext.createMediaElementSource(audioPlayer);
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 64;
+            
+            if (analysis.channels === 2) {
+                splitter = audioContext.createChannelSplitter(2);
+                leftGain = audioContext.createGain();
+                rightGain = audioContext.createGain();
+                const merger = audioContext.createChannelMerger(2);
+                
+                sourceNode.connect(splitter);
+                splitter.connect(leftGain, 0);
+                splitter.connect(rightGain, 1);
+                leftGain.connect(merger, 0, 0);
+                rightGain.connect(merger, 0, 1);
+                merger.connect(analyser);
+                analyser.connect(audioContext.destination);
+            } else {
+                sourceNode.connect(analyser);
+                analyser.connect(audioContext.destination);
+            }
+
+            generateWaveform(analysis.audioBuffer);
+            createVisualizer();
+
+            audioPlayer.addEventListener('timeupdate', updateProgress);
+            audioPlayer.addEventListener('ended', () => {
+                document.getElementById('playBtn').textContent = '▶️';
+                document.getElementById('playBtn').classList.remove('playing');
+                cancelAnimationFrame(animationFrame);
+            });
+        }
+
+        function generateWaveform(audioBuffer) {
+            const waveform = document.getElementById('waveform');
+            const bars = 100;
+            const data = audioBuffer.getChannelData(0);
+            const blockSize = Math.floor(data.length / bars);
+            
+            for (let i = 0; i < bars; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'waveform-bar';
+                
+                let sum = 0;
+                for (let j = 0; j < blockSize; j++) {
+                    sum += Math.abs(data[i * blockSize + j]);
+                }
+                const average = sum / blockSize;
+                const height = Math.max(4, Math.min(70, average * 300));
+                
+                bar.style.height = height + 'px';
+                waveform.appendChild(bar);
+            }
+        }
+
+        function createVisualizer() {
+            const visualizer = document.getElementById('visualizer');
+            visualizer.innerHTML = '';
+            for (let i = 0; i < 32; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'visualizer-bar';
+                bar.style.height = '4px';
+                visualizer.appendChild(bar);
+            }
+        }
+
+        function togglePlay() {
+            if (!audioPlayer) return;
+            
+            const playBtn = document.getElementById('playBtn');
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playBtn.textContent = '⏸️';
+                playBtn.classList.add('playing');
+                animate();
+            } else {
+                audioPlayer.pause();
+                playBtn.textContent = '▶️';
+                playBtn.classList.remove('playing');
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+
+        function switchChannel(channel) {
+            if (!leftGain || !rightGain) return;
+            
+            currentChannel = channel;
+            document.querySelectorAll('.channel-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (channel === 'stereo') {
+                leftGain.gain.value = 1;
+                rightGain.gain.value = 1;
+            } else if (channel === 'left') {
+                leftGain.gain.value = 1;
+                rightGain.gain.value = 0;
+            } else if (channel === 'right') {
+                leftGain.gain.value = 0;
+                rightGain.gain.value = 1;
+            }
+        }
+
+        function updateProgress() {
+            if (!audioPlayer) return;
+            
+            const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            document.getElementById('progressIndicator').style.width = percent + '%';
+            
+            const current = formatDuration(audioPlayer.currentTime);
+            const total = formatDuration(audioPlayer.duration);
+            document.getElementById('timeDisplay').textContent = `${current} / ${total}`;
+            
+            const bars = document.querySelectorAll('.waveform-bar');
+            const activeIndex = Math.floor((audioPlayer.currentTime / audioPlayer.duration) * bars.length);
+            bars.forEach((bar, i) => {
+                if (i < activeIndex) {
+                    bar.classList.add('active');
+                } else {
+                    bar.classList.remove('active');
+                }
+                
+                if (i === activeIndex) {
+                    bar.classList.add('playing');
+                } else {
+                    bar.classList.remove('playing');
+                }
+            });
+        }
+
+        function seekAudio(event) {
+            if (!audioPlayer) return;
+            
+            const waveform = document.getElementById('waveform');
+            const rect = waveform.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const percent = x / rect.width;
+            audioPlayer.currentTime = percent * audioPlayer.duration;
+        }
+
+        function changeVolume(value) {
+            if (!audioPlayer) return;
+            audioPlayer.volume = value / 100;
+            updateVolumeIcon(value);
+        }
+
+        function toggleMute() {
+            if (!audioPlayer) return;
+            audioPlayer.muted = !audioPlayer.muted;
+            updateVolumeIcon(audioPlayer.muted ? 0 : document.getElementById('volumeSlider').value);
+        }
+
+        function updateVolumeIcon(value) {
+            const icon = document.getElementById('volumeIcon');
+            if (value == 0) {
+                icon.textContent = '🔇';
+            } else if (value < 50) {
+                icon.textContent = '🔉';
+            } else {
+                icon.textContent = '🔊';
+            }
+        }
+
+        function animate() {
+            if (!analyser) return;
+            
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(dataArray);
+            
+            const bars = document.querySelectorAll('.visualizer-bar');
+            bars.forEach((bar, i) => {
+                const value = dataArray[i] || 0;
+                const height = Math.max(4, (value / 255) * 40);
+                bar.style.height = height + 'px';
+            });
+            
+            animationFrame = requestAnimationFrame(animate);
+        }
+
+        function cleanupAudioPlayer() {
+            if (audioPlayer) {
+                audioPlayer.pause();
+                audioPlayer = null;
+            }
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
         }
 
         async function analyzeBatchAudio(files) {
@@ -969,6 +1445,47 @@
             `;
 
             document.getElementById('resultsGrid').innerHTML = `
+                ${analysis.audioUrl ? `
+                <div class="audio-player-card">
+                    <div class="player-header">
+                        <h3>
+                            <span>🎵</span>
+                            Audio Player
+                            ${analysis.channels === 2 ? `
+                                <span class="channel-indicator left">L</span>
+                                <span class="channel-indicator right">R</span>
+                            ` : ''}
+                        </h3>
+                        ${analysis.channels === 2 ? `
+                        <div class="channel-toggle">
+                            <button class="channel-btn active" onclick="switchChannel('stereo')">🎚️ Stereo</button>
+                            <button class="channel-btn" onclick="switchChannel('left')">◀️ Left</button>
+                            <button class="channel-btn" onclick="switchChannel('right')">▶️ Right</button>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="audio-controls">
+                        <button class="play-btn" id="playBtn" onclick="togglePlay()">▶️</button>
+                        <span class="time-display" id="timeDisplay">0:00 / ${analysis.duration}</span>
+                        <div class="waveform-container">
+                            <div class="waveform" id="waveform" onclick="seekAudio(event)">
+                                <div class="progress-indicator" id="progressIndicator"></div>
+                            </div>
+                        </div>
+                        <div class="volume-control">
+                            <button class="volume-btn" onclick="toggleMute()">
+                                <span id="volumeIcon">🔊</span>
+                            </button>
+                            <input type="range" class="volume-slider" id="volumeSlider" 
+                                   min="0" max="100" value="100" onchange="changeVolume(this.value)">
+                        </div>
+                    </div>
+                    
+                    <div class="audio-visualizer" id="visualizer"></div>
+                </div>
+                ` : ''}
+                
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">📄</div>
@@ -1030,6 +1547,10 @@
                     <div class="result-subtext">Peak level</div>
                 </div>
             `;
+
+            if (analysis.audioUrl) {
+                initAudioPlayer(analysis);
+            }
         }
 
         function displayBatchResults(results) {
@@ -1133,6 +1654,7 @@
         }
 
         function goHome() {
+            cleanupAudioPlayer();
             document.getElementById('resultsSection').classList.remove('active');
             document.getElementById('uploadSection').style.display = 'block';
             document.getElementById('fileInput').value = '';
