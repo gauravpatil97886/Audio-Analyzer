@@ -3,1001 +3,980 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Analyzer - Professional Audio Analysis Tool</title>
+    <title>Sonic Insights - Audio Analysis Platform</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f9fafb;
-            --border: #e5e7eb;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --radius: 12px;
+            --primary: #8b5cf6; --primary-hover: #7c3aed; --secondary: #ec4899;
+            --success: #10b981; --warning: #f59e0b; --error: #ef4444;
+            --text-primary: #1f2937; --text-secondary: #6b7280;
+            --bg-primary: #ffffff; --bg-secondary: #f9fafb; --bg-tertiary: #f3f4f6;
+            --border: #e5e7eb; --shadow: rgba(0,0,0,0.1); --shadow-lg: rgba(139,92,246,0.3);
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--text-primary);
+            min-height: 100vh; padding: 20px; color: var(--text-primary);
         }
 
         body.dark-mode {
-            --text-primary: #f9fafb;
-            --text-secondary: #9ca3af;
-            --bg-primary: #1f2937;
-            --bg-secondary: #111827;
-            --border: #374151;
-            --shadow: rgba(0, 0, 0, 0.3);
+            --text-primary: #f9fafb; --text-secondary: #9ca3af;
+            --bg-primary: #1f2937; --bg-secondary: #111827; --bg-tertiary: #0f172a;
+            --border: #374151; --shadow: rgba(0,0,0,0.5);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1400px; margin: 0 auto; }
 
-        /* Header */
         header {
-            background: var(--bg-primary);
-            border-radius: var(--radius);
-            padding: 24px 32px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 6px var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 16px;
+            padding: 24px 32px; margin-bottom: 24px; box-shadow: 0 8px 32px var(--shadow);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 16px; animation: slideDown 0.6s ease-out;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        body.dark-mode header { background: rgba(31,41,55,0.95); }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .logo { display: flex; align-items: center; gap: 16px; }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+            width: 56px; height: 56px; background: var(--gradient-1);
+            border-radius: 16px; display: flex; align-items: center;
+            justify-content: center; font-size: 32px;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 4px 20px var(--shadow-lg);
         }
 
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .logo-text h1 {
+            font-size: 28px; font-weight: 800;
+            background: var(--gradient-1); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
         }
 
-        .logo p {
-            font-size: 14px;
-            color: var(--text-secondary);
+        .logo-text p { font-size: 13px; color: var(--text-secondary); font-weight: 500; margin-top: 2px; }
+
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+
+        .btn-icon {
+            width: 48px; height: 48px; background: var(--bg-secondary);
+            border: 1px solid var(--border); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s; font-size: 20px;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
+        .btn-icon:hover {
+            background: var(--primary); color: white;
+            transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 16px var(--shadow-lg);
         }
 
-        .dark-mode-toggle {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 20px;
+        .btn-header {
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            padding: 12px 24px; border-radius: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; color: var(--text-primary);
+            display: flex; align-items: center; gap: 8px; font-size: 14px;
         }
 
-        .dark-mode-toggle:hover {
-            background: var(--border);
+        .btn-header:hover {
+            background: var(--primary); color: white;
+            transform: translateY(-2px); box-shadow: 0 4px 12px var(--shadow-lg);
         }
 
-        .btn-history {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-primary);
-        }
-
-        .btn-history:hover {
-            background: var(--border);
-        }
-
-        /* Main Content */
         .main-content {
-            background: var(--bg-primary);
-            border-radius: var(--radius);
-            padding: 40px;
-            box-shadow: 0 4px 6px var(--shadow);
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 16px;
+            padding: 48px; box-shadow: 0 8px 32px var(--shadow);
+            margin-bottom: 24px; animation: fadeInUp 0.8s ease-out;
         }
 
-        /* Upload Section */
-        .upload-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+        body.dark-mode .main-content { background: rgba(31,41,55,0.95); }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .upload-section { text-align: center; }
 
         .upload-section h2 {
-            font-size: 28px;
-            margin-bottom: 12px;
-            color: var(--text-primary);
+            font-size: 42px; font-weight: 800; margin-bottom: 16px;
+            background: var(--gradient-1); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; background-clip: text;
         }
 
         .upload-section .subtitle {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
+            font-size: 18px; color: var(--text-secondary); margin-bottom: 40px;
+        }
+
+        .feature-pills {
+            display: flex; justify-content: center; gap: 12px;
+            margin-bottom: 32px; flex-wrap: wrap;
+        }
+
+        .feature-pill {
+            background: var(--bg-secondary); padding: 8px 16px;
+            border-radius: 20px; font-size: 13px; font-weight: 600;
+            color: var(--text-secondary); display: flex; align-items: center;
+            gap: 6px; border: 1px solid var(--border);
         }
 
         .tabs {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 24px;
-            background: var(--bg-secondary);
-            padding: 6px;
-            border-radius: 10px;
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
+            display: flex; gap: 8px; justify-content: center; margin-bottom: 32px;
+            background: var(--bg-secondary); padding: 6px; border-radius: 14px;
+            width: fit-content; margin-left: auto; margin-right: auto;
+            border: 1px solid var(--border);
         }
 
         .tab {
-            padding: 12px 24px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-secondary);
+            padding: 14px 32px; border: none; background: transparent;
+            border-radius: 10px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s; color: var(--text-secondary); font-size: 15px;
+            display: flex; align-items: center; gap: 8px;
         }
 
         .tab.active {
-            background: var(--primary);
-            color: white;
+            background: var(--primary); color: white;
+            box-shadow: 0 4px 12px var(--shadow-lg); transform: scale(1.02);
         }
 
-        .tab-content {
-            display: none;
-        }
+        .tab-content { display: none; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
 
-        .tab-content.active {
-            display: block;
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .upload-area {
-            border: 2px dashed var(--border);
-            border-radius: var(--radius);
-            padding: 60px 40px;
-            background: var(--bg-secondary);
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
+            border: 3px dashed var(--border); border-radius: 16px;
+            padding: 80px 40px; background: var(--bg-secondary);
+            cursor: pointer; transition: all 0.4s; position: relative; overflow: hidden;
         }
 
         .upload-area:hover, .upload-area.drag-over {
-            border-color: var(--primary);
-            background: rgba(99, 102, 241, 0.05);
+            border-color: var(--primary); background: rgba(139,92,246,0.08);
+            transform: scale(1.01); box-shadow: 0 8px 24px var(--shadow-lg);
         }
 
         .upload-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 64px; margin-bottom: 24px;
+            animation: bounce 2s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(139,92,246,0.3));
         }
 
-        .upload-area h3 {
-            font-size: 20px;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        .upload-area p {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
+        .upload-area h3 { font-size: 24px; margin-bottom: 12px; color: var(--text-primary); font-weight: 700; }
+        .upload-area p { color: var(--text-secondary); margin-bottom: 24px; font-size: 16px; }
 
         .btn-primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
+            background: var(--gradient-1); color: white; border: none;
+            padding: 16px 40px; border-radius: 12px; font-weight: 700;
+            font-size: 16px; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 4px 16px var(--shadow-lg);
         }
 
         .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            transform: translateY(-3px); box-shadow: 0 8px 24px var(--shadow-lg);
         }
 
-        .url-input-container {
-            display: flex;
-            gap: 12px;
-            max-width: 600px;
-            margin: 0 auto;
+        .url-input-group {
+            display: flex; gap: 12px; margin-bottom: 16px;
+            animation: slideInUp 0.5s ease-out;
         }
+
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .url-input {
-            flex: 1;
-            padding: 14px 20px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 16px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            transition: all 0.3s;
+            flex: 1; padding: 16px 24px; border: 2px solid var(--border);
+            border-radius: 12px; font-size: 16px; background: var(--bg-secondary);
+            color: var(--text-primary); transition: all 0.3s;
         }
 
         .url-input:focus {
-            outline: none;
-            border-color: var(--primary);
+            outline: none; border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139,92,246,0.1); background: var(--bg-primary);
         }
 
-        /* Loading State */
+        .btn-remove {
+            background: var(--error); color: white; border: none;
+            padding: 16px 24px; border-radius: 12px; cursor: pointer;
+            transition: all 0.3s; font-size: 20px; min-width: 56px;
+        }
+
+        .btn-remove:hover { background: #dc2626; transform: scale(1.05); }
+
+        .btn-add-more {
+            background: var(--bg-secondary); border: 2px dashed var(--border);
+            padding: 14px 32px; border-radius: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; color: var(--text-primary);
+            margin-top: 16px; display: inline-flex; align-items: center; gap: 8px;
+        }
+
+        .btn-add-more:hover {
+            border-color: var(--primary); color: var(--primary);
+            background: rgba(139,92,246,0.05); transform: translateY(-2px);
+        }
+
         .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            z-index: 1000; align-items: center; justify-content: center;
         }
 
-        .loading-overlay.active {
-            display: flex;
-        }
+        .loading-overlay.active { display: flex; }
 
         .loading-content {
-            background: var(--bg-primary);
-            padding: 40px;
-            border-radius: var(--radius);
-            text-align: center;
-            max-width: 400px;
+            background: var(--bg-primary); padding: 48px; border-radius: 16px;
+            text-align: center; max-width: 400px;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
         }
 
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            width: 80px; height: 80px; border: 5px solid var(--border);
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 24px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .progress-bar {
+            width: 100%; height: 8px; background: var(--border);
+            border-radius: 4px; margin-top: 24px; overflow: hidden;
         }
 
-        /* Results Section */
-        .results-section {
-            display: none;
-            animation: fadeIn 0.5s;
+        .progress-fill {
+            height: 100%; background: var(--gradient-1); width: 0%;
+            transition: width 0.3s; border-radius: 4px;
         }
 
-        .results-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .results-section { display: none; animation: fadeIn 0.5s; }
+        .results-section.active { display: block; }
 
         .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 16px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 32px; flex-wrap: wrap; gap: 24px;
         }
 
-        .results-header h2 {
-            font-size: 24px;
-            color: var(--text-primary);
-        }
-
-        .results-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-secondary {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: var(--text-primary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--border);
+        .results-title-area h2 {
+            font-size: 36px; font-weight: 800; color: var(--text-primary);
+            margin-bottom: 12px;
         }
 
         .quality-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 12px 24px; border-radius: 24px; font-weight: 700; font-size: 15px;
         }
 
-        .quality-badge.good {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
+        .quality-badge.excellent {
+            background: rgba(16,185,129,0.15); color: var(--success);
+            border: 2px solid var(--success);
         }
 
-        .quality-badge.average {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
+        .quality-badge.good { background: rgba(16,185,129,0.1); color: var(--success); }
+        .quality-badge.average { background: rgba(245,158,11,0.1); color: var(--warning); }
+        .quality-badge.poor { background: rgba(239,68,68,0.1); color: var(--error); }
+
+        .results-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        .btn-secondary {
+            background: var(--bg-secondary); border: 1px solid var(--border);
+            padding: 12px 24px; border-radius: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s; color: var(--text-primary);
+            display: flex; align-items: center; gap: 8px; font-size: 14px;
         }
 
-        .quality-badge.poor {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--error);
+        .btn-secondary:hover {
+            background: var(--primary); color: white;
+            transform: translateY(-2px); box-shadow: 0 4px 12px var(--shadow-lg);
         }
 
         .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px; margin-bottom: 32px;
         }
 
         .result-card {
-            background: var(--bg-secondary);
-            padding: 24px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
+            background: var(--bg-secondary); padding: 28px; border-radius: 16px;
+            border: 1px solid var(--border); transition: all 0.4s;
+            animation: slideInUp 0.5s ease-out backwards;
+            position: relative; overflow: hidden;
         }
 
-        .result-card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
+        .result-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: var(--gradient-1); transform: scaleX(0); transition: transform 0.4s;
         }
+
+        .result-card:hover::before { transform: scaleX(1); }
+
+        .result-card:hover {
+            transform: translateY(-8px); box-shadow: 0 12px 24px var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .result-card:nth-child(1) { animation-delay: 0.05s; }
+        .result-card:nth-child(2) { animation-delay: 0.1s; }
+        .result-card:nth-child(3) { animation-delay: 0.15s; }
+        .result-card:nth-child(4) { animation-delay: 0.2s; }
+        .result-card:nth-child(5) { animation-delay: 0.25s; }
+        .result-card:nth-child(6) { animation-delay: 0.3s; }
+        .result-card:nth-child(7) { animation-delay: 0.35s; }
+        .result-card:nth-child(8) { animation-delay: 0.4s; }
+
+        .result-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 
         .result-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+            width: 48px; height: 48px; background: rgba(139,92,246,0.1);
+            border-radius: 12px; display: flex; align-items: center;
+            justify-content: center; font-size: 24px;
         }
 
         .result-card-header h3 {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 13px; color: var(--text-secondary); font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
         .result-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-top: 8px;
+            font-size: 28px; font-weight: 800; color: var(--text-primary);
+            margin-top: 8px; word-break: break-word;
         }
 
         .result-subtext {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 4px;
+            font-size: 14px; color: var(--text-secondary);
+            margin-top: 6px; font-weight: 500;
         }
 
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--bg-primary);
-            padding: 16px 24px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 2000;
-            transform: translateX(400px);
-            transition: transform 0.3s;
-        }
+        .batch-results { margin-top: 40px; }
 
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification.success {
-            border-left: 4px solid var(--success);
-        }
-
-        .notification.error {
-            border-left: 4px solid var(--error);
-        }
-
-        /* History Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1500;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-primary);
-            border-radius: var(--radius);
-            max-width: 800px;
-            width: 100%;
-            max-height: 80vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-header {
-            padding: 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            font-size: 20px;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-secondary);
-        }
-
-        .modal-body {
-            padding: 24px;
-            overflow-y: auto;
-        }
-
-        .history-item {
-            padding: 16px;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .history-item:hover {
-            background: var(--border);
-        }
-
-        .history-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .history-item-title {
-            font-weight: 600;
+        .batch-results h2 {
+            font-size: 28px; font-weight: 800; margin-bottom: 24px;
             color: var(--text-primary);
         }
 
-        .history-item-date {
-            font-size: 12px;
-            color: var(--text-secondary);
+        .batch-item {
+            background: var(--bg-secondary); padding: 24px; border-radius: 16px;
+            margin-bottom: 16px; border-left: 5px solid var(--primary);
+            transition: all 0.3s; animation: slideInUp 0.5s ease-out backwards;
         }
 
-        .history-item-details {
-            display: flex;
-            gap: 16px;
-            font-size: 14px;
-            color: var(--text-secondary);
+        .batch-item:hover {
+            transform: translateX(8px); box-shadow: 0 8px 16px var(--shadow);
         }
 
-        /* Responsive */
+        .notification {
+            position: fixed; top: 24px; right: 24px; background: var(--bg-primary);
+            padding: 20px 28px; border-radius: 16px; box-shadow: 0 8px 24px var(--shadow);
+            display: flex; align-items: center; gap: 12px; z-index: 2000;
+            transform: translateX(400px); transition: transform 0.4s;
+            max-width: 400px; border: 1px solid var(--border);
+        }
+
+        .notification.show { transform: translateX(0); }
+        .notification.success { border-left: 5px solid var(--success); }
+        .notification.error { border-left: 5px solid var(--error); }
+
+        .notification-icon { font-size: 24px; }
+        .notification-message { font-weight: 600; color: var(--text-primary); }
+
+        footer {
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 16px;
+            padding: 48px 32px; box-shadow: 0 8px 32px var(--shadow);
+            text-align: center; margin-top: 24px; position: relative;
+        }
+
+        body.dark-mode footer { background: rgba(31,41,55,0.95); }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .creator-badge {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: var(--gradient-1); padding: 16px 32px;
+            border-radius: 50px; color: white; font-weight: 600;
+            font-size: 18px; margin-bottom: 20px;
+            box-shadow: 0 4px 12px var(--shadow-lg);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+        }
+
+        .footer-links {
+            display: flex; justify-content: center; gap: 24px;
+            margin: 20px 0; flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: var(--text-secondary); text-decoration: none;
+            transition: all 0.3s; font-weight: 500;
+        }
+
+        .footer-link:hover { color: var(--primary); transform: translateY(-2px); }
+
+        .footer-copyright {
+            color: var(--text-secondary); font-size: 14px; margin-top: 20px;
+        }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); z-index: 1500;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--bg-primary); border-radius: 16px;
+            max-width: 800px; width: 100%; max-height: 80vh;
+            overflow: hidden; display: flex; flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 24px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .modal-header h2 { font-size: 20px; }
+
+        .modal-close {
+            background: none; border: none; font-size: 24px;
+            cursor: pointer; color: var(--text-secondary); transition: all 0.3s;
+        }
+
+        .modal-close:hover { color: var(--error); transform: rotate(90deg); }
+
+        .modal-body { padding: 24px; overflow-y: auto; }
+
+        .history-item {
+            padding: 16px; background: var(--bg-secondary); border-radius: 8px;
+            margin-bottom: 12px; cursor: pointer; transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            background: var(--border); transform: translateX(5px);
+        }
+
+        .hidden { display: none; }
+
         @media (max-width: 768px) {
-            body {
-                padding: 12px;
-            }
-
-            header {
-                padding: 20px;
-            }
-
-            .main-content {
-                padding: 24px;
-            }
-
-            .upload-area {
-                padding: 40px 20px;
-            }
-
-            .results-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .logo h1 {
-                font-size: 20px;
-            }
-
-            .url-input-container {
-                flex-direction: column;
-            }
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .waveform-container {
-            background: var(--bg-secondary);
-            padding: 24px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            margin-bottom: 24px;
-        }
-
-        .waveform-placeholder {
-            width: 100%;
-            height: 120px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%);
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .waveform-bars {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            height: 100%;
-            padding: 0 8px;
-        }
-
-        .waveform-bar {
-            width: 3px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 2px;
-            animation: wave 1.5s ease-in-out infinite;
-        }
-
-        .waveform-bar:nth-child(even) {
-            animation-delay: 0.2s;
-        }
-
-        @keyframes wave {
-            0%, 100% { height: 20%; }
-            50% { height: 80%; }
+            body { padding: 12px; }
+            header { padding: 20px; }
+            .main-content { padding: 24px; }
+            .upload-area { padding: 40px 20px; }
+            .results-grid { grid-template-columns: 1fr; }
+            .logo-text h1 { font-size: 20px; }
+            .url-input-group { flex-direction: column; }
+            .results-actions { width: 100%; }
+            .btn-secondary, .btn-primary, .btn-header { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header>
             <div class="logo">
                 <div class="logo-icon">🎵</div>
-                <div>
-                    <h1>Audio Analyzer</h1>
-                    <p>Professional audio analysis & reporting</p>
+                <div class="logo-text">
+                    <h1>Sonic Insights</h1>
+                    <p>Advanced Audio Intelligence Platform</p>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="btn-history" onclick="showHistory()">
+                <button class="btn-header hidden" id="homeBtn" onclick="goHome()">
+                    🏠 Home
+                </button>
+                <button class="btn-header" onclick="showHistory()">
                     📋 History
                 </button>
-                <button class="dark-mode-toggle" onclick="toggleDarkMode()">
-                    🌙
+                <button class="btn-header" onclick="exportPDF()">
+                    📄 Export PDF
                 </button>
+                <button class="btn-icon" onclick="toggleDarkMode()">🌙</button>
             </div>
         </header>
 
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Upload Section -->
             <div class="upload-section" id="uploadSection">
-                <h2>Analyze Your Audio File</h2>
-                <p class="subtitle">Upload a file or paste a URL to get instant audio quality insights</p>
+                <h2>Analyze Your Audio</h2>
+                <p class="subtitle">Professional-grade analysis with instant insights</p>
 
-                <!-- Tabs -->
-                <div class="tabs">
-                    <button class="tab active" onclick="switchTab('upload')">📁 Upload File</button>
-                    <button class="tab" onclick="switchTab('url')">🔗 Audio URL</button>
+                <div class="feature-pills">
+                    <span class="feature-pill">⚡ Instant Analysis</span>
+                    <span class="feature-pill">📊 Quality Detection</span>
+                    <span class="feature-pill">🎚️ Batch Processing</span>
+                    <span class="feature-pill">🔊 Waveform Viz</span>
                 </div>
 
-                <!-- Upload Tab -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('upload')">
+                        📁 Upload Files
+                    </button>
+                    <button class="tab" onclick="switchTab('url')">
+                        🔗 Audio URLs
+                    </button>
+                </div>
+
                 <div class="tab-content active" id="uploadTab">
                     <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
                         <div class="upload-icon">📤</div>
-                        <h3>Drop your audio file here</h3>
+                        <h3>Drop your audio files here</h3>
                         <p>or click to browse from your device</p>
-                        <button class="btn-primary" type="button">Choose File</button>
-                        <p style="margin-top: 20px; font-size: 14px;">Supports MP3, WAV, M4A, AAC • Max 50MB</p>
+                        <button class="btn-primary" type="button">Choose Files</button>
+                        <p style="margin-top: 20px; font-size: 14px; color: var(--text-secondary);">
+                            MP3, WAV, M4A, AAC • Max 50MB • Batch supported
+                        </p>
                     </div>
-                    <input type="file" id="fileInput" accept="audio/*" style="display: none;" onchange="handleFileSelect(event)">
+                    <input type="file" id="fileInput" accept="audio/*" multiple style="display: none;" onchange="handleFileSelect(event)">
                 </div>
 
-                <!-- URL Tab -->
                 <div class="tab-content" id="urlTab">
                     <div style="text-align: center; padding: 40px;">
                         <div style="font-size: 48px; margin-bottom: 20px;">🌐</div>
-                        <h3 style="margin-bottom: 20px;">Analyze Audio from URL</h3>
-                        <div class="url-input-container">
-                            <input type="text" class="url-input" id="audioUrl" placeholder="https://example.com/audio.mp3">
-                            <button class="btn-primary" onclick="analyzeFromUrl()">Analyze</button>
+                        <h3 style="margin-bottom: 20px; font-size: 24px;">Analyze from URLs</h3>
+                        <div class="url-input-container" id="urlContainer">
+                            <div class="url-input-group">
+                                <input type="text" class="url-input" placeholder="https://example.com/audio.mp3">
+                            </div>
                         </div>
+                        <button class="btn-add-more" onclick="addUrlInput()">➕ Add More URLs</button>
+                        <br><br>
+                        <button class="btn-primary" onclick="analyzeFromUrls()">🔍 Analyze All</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Results Section -->
             <div class="results-section" id="resultsSection">
                 <div class="results-header">
-                    <div>
+                    <div class="results-title-area">
                         <h2>Analysis Results</h2>
-                        <div id="qualityBadge" style="margin-top: 12px;"></div>
+                        <div id="qualityBadge"></div>
                     </div>
                     <div class="results-actions">
-                        <button class="btn-secondary" onclick="copyReport()">📋 Copy Report</button>
-                        <button class="btn-secondary" onclick="downloadReport()">📥 Download PDF</button>
-                        <button class="btn-primary" onclick="analyzeNew()">🔄 Analyze New</button>
+                        <button class="btn-secondary" onclick="shareResults()">🔗 Share</button>
+                        <button class="btn-secondary" onclick="copyReport()">📋 Copy</button>
+                        <button class="btn-secondary" onclick="downloadReport()">📥 Download</button>
+                        <button class="btn-primary" onclick="analyzeNew()">🔄 New Analysis</button>
                     </div>
                 </div>
 
-                <!-- Waveform Visualization -->
-                <div class="waveform-container">
-                    <h3 style="margin-bottom: 16px; color: var(--text-primary);">Audio Waveform</h3>
-                    <div class="waveform-placeholder">
-                        <div class="waveform-bars">
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                            <div class="waveform-bar"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results Grid -->
                 <div class="results-grid" id="resultsGrid"></div>
+                <div class="batch-results" id="batchResults"></div>
             </div>
         </div>
+
+        <footer>
+            <div class="footer-content">
+                <div class="creator-badge">
+                    <span>Created with</span>
+                    <span style="animation: heartbeat 1.5s ease-in-out infinite;">❤️</span>
+                    <span>by Gaurav Patil</span>
+                </div>
+                <div class="footer-links">
+                    <!-- <a href="#" class="footer-link">🌟 Star on GitHub</a>
+                    <a href="#" class="footer-link">💼 LinkedIn</a>
+                    <a href="#" class="footer-link">🐦 Twitter</a>
+                    <a href="#" class="footer-link">📧 Contact</a> -->
+                </div>
+                <div class="footer-copyright">
+                    © 2024 Sonic Insights. Built for audio professionals.
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
             <div class="spinner"></div>
-            <h3 style="margin-bottom: 8px; color: var(--text-primary);">Analyzing Audio...</h3>
-            <p style="color: var(--text-secondary);">This may take a few moments</p>
+            <h3 style="margin-bottom: 8px; color: var(--text-primary);" id="loadingText">Analyzing Audio...</h3>
+            <p style="color: var(--text-secondary);" id="loadingSubtext">Processing your file</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Notification -->
     <div class="notification" id="notification">
-        <span id="notificationIcon"></span>
-        <span id="notificationMessage"></span>
+        <span class="notification-icon" id="notificationIcon"></span>
+        <span class="notification-message" id="notificationMessage"></span>
     </div>
 
-    <!-- History Modal -->
     <div class="modal" id="historyModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Analysis History</h2>
+                <h2>📜 Analysis History</h2>
                 <button class="modal-close" onclick="closeHistory()">×</button>
             </div>
             <div class="modal-body" id="historyList">
-                <p style="text-align: center; color: var(--text-secondary); padding: 40px;">No history yet. Analyze your first audio file!</p>
+                <p style="text-align: center; color: var(--text-secondary); padding: 40px;">
+                    No history yet. Analyze your first audio file!
+                </p>
             </div>
         </div>
     </div>
 
     <script>
-        // Global state
         let currentAnalysis = null;
-        let analysisHistory = JSON.parse(localStorage.getItem('audioAnalysisHistory') || '[]');
+        let currentBatchAnalysis = [];
+        let analysisHistory = [];
 
-        // Dark mode
+        try {
+            analysisHistory = JSON.parse(localStorage.getItem('sonicInsightsHistory') || '[]');
+        } catch(e) {
+            analysisHistory = [];
+        }
+
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('darkMode', isDark);
-            document.querySelector('.dark-mode-toggle').textContent = isDark ? '☀️' : '🌙';
+            try {
+                localStorage.setItem('sonicDarkMode', isDark);
+            } catch(e) {}
+            document.querySelector('.btn-icon').textContent = isDark ? '☀️' : '🌙';
         }
 
-        // Load dark mode preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            toggleDarkMode();
-        }
+        try {
+            if (localStorage.getItem('sonicDarkMode') === 'true') {
+                toggleDarkMode();
+            }
+        } catch(e) {}
 
-        // Tab switching
         function switchTab(tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
             event.target.classList.add('active');
             document.getElementById(tab + 'Tab').classList.add('active');
         }
 
-        // Drag and drop
+        function addUrlInput() {
+            const container = document.getElementById('urlContainer');
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'url-input-group';
+            inputGroup.innerHTML = `
+                <input type="text" class="url-input" placeholder="https://example.com/audio.mp3">
+                <button class="btn-remove" onclick="this.parentElement.remove()">🗑️</button>
+            `;
+            container.appendChild(inputGroup);
+        }
+
         const uploadArea = document.getElementById('uploadArea');
-        
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadArea.classList.add('drag-over');
         });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('drag-over');
-        });
-
+        uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('drag-over');
-            
             const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleFile(files[0]);
-            }
+            if (files.length > 0) handleMultipleFiles(Array.from(files));
         });
 
-        // File selection
         function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                handleFile(file);
-            }
+            const files = Array.from(event.target.files);
+            if (files.length > 0) handleMultipleFiles(files);
         }
 
-        // File handling
-        function handleFile(file) {
+        async function handleMultipleFiles(files) {
             const validTypes = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/x-m4a', 'audio/aac'];
-            const maxSize = 50 * 1024 * 1024; // 50MB
+            const maxSize = 50 * 1024 * 1024;
 
-            if (!validTypes.includes(file.type) && !file.name.match(/\.(mp3|wav|m4a|aac)$/i)) {
-                showNotification('error', 'Unsupported file format. Please use MP3, WAV, M4A, or AAC.');
-                return;
+            const validFiles = files.filter(file => {
+                if (!validTypes.includes(file.type) && !file.name.match(/\.(mp3|wav|m4a|aac)$/i)) {
+                    showNotification('error', `Skipped ${file.name}: Unsupported format`);
+                    return false;
+                }
+                if (file.size > maxSize) {
+                    showNotification('error', `Skipped ${file.name}: File too large`);
+                    return false;
+                }
+                return true;
+            });
+
+            if (validFiles.length === 0) return;
+            if (validFiles.length === 1) {
+                analyzeAudio(validFiles[0]);
+            } else {
+                analyzeBatchAudio(validFiles);
             }
-
-            if (file.size > maxSize) {
-                showNotification('error', 'File too large. Maximum size is 50MB.');
-                return;
-            }
-
-            analyzeAudio(file);
         }
 
-        // URL analysis
-        function analyzeFromUrl() {
-            const url = document.getElementById('audioUrl').value.trim();
-            
-            if (!url) {
-                showNotification('error', 'Please enter a valid audio URL.');
+        async function analyzeFromUrls() {
+            const inputs = document.querySelectorAll('#urlContainer .url-input');
+            const urls = Array.from(inputs).map(input => input.value.trim()).filter(url => url !== '');
+
+            if (urls.length === 0) {
+                showNotification('error', 'Please enter at least one valid audio URL');
                 return;
             }
 
-            if (!url.match(/^https?:\/\/.+\.(mp3|wav|m4a|aac)(\?.*)?$/i)) {
-                showNotification('error', 'Invalid audio URL. Please provide a direct link to an audio file.');
-                return;
+            if (urls.length === 1) {
+                analyzeAudioFromUrl(urls[0]);
+            } else {
+                analyzeBatchUrls(urls);
             }
-
-            analyzeAudioFromUrl(url);
         }
 
-        // Analyze audio (file)
+        async function downloadAudioFromUrl(url) {
+            try {
+                const response = await fetch(url, { mode: 'cors' });
+                if (!response.ok) throw new Error('Failed to fetch audio');
+                const blob = await response.blob();
+                const audioBlob = new Blob([blob], { type: 'audio/mpeg' });
+                return {
+                    blob: audioBlob,
+                    url: URL.createObjectURL(audioBlob),
+                    size: blob.size,
+                    name: url.split('/').pop().split('?')[0] || 'audio.mp3'
+                };
+            } catch (error) {
+                throw new Error('Unable to download audio. Check URL or CORS.');
+            }
+        }
+
         async function analyzeAudio(file) {
-            showLoading(true);
+            showLoading(true, 'Analyzing Audio...', 'Processing your file');
 
-            // Create audio element for analysis
             const audio = new Audio();
             const url = URL.createObjectURL(file);
             audio.src = url;
 
             audio.addEventListener('loadedmetadata', async () => {
-                // Simulate processing time
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const response = await fetch(url);
+                    const arrayBuffer = await response.arrayBuffer();
+                    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-                // Create AudioContext for detailed analysis
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioContext.createMediaElementSource(audio);
-                const analyser = audioContext.createAnalyser();
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
+                    const channelData = audioBuffer.getChannelData(0);
+                    let sum = 0;
+                    for (let i = 0; i < channelData.length; i++) {
+                        sum += channelData[i] * channelData[i];
+                    }
+                    const rms = Math.sqrt(sum / channelData.length);
+                    const loudness = 20 * Math.log10(rms);
 
-                // Get audio buffer for analysis
-                const response = await fetch(url);
-                const arrayBuffer = await response.arrayBuffer();
-                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                    const sampleRate = audioBuffer.sampleRate;
+                    const bitrate = Math.round((file.size * 8) / audio.duration / 1000);
+                    let quality = 'average';
+                    
+                    if (sampleRate >= 48000 && bitrate >= 192) {
+                        quality = 'excellent';
+                    } else if (sampleRate >= 44100 && bitrate >= 128) {
+                        quality = 'good';
+                    } else if (sampleRate < 22050 || bitrate < 64) {
+                        quality = 'poor';
+                    }
 
-                // Calculate loudness (approximation)
-                const channelData = audioBuffer.getChannelData(0);
-                let sum = 0;
-                for (let i = 0; i < channelData.length; i++) {
-                    sum += channelData[i] * channelData[i];
+                    const analysis = {
+                        fileName: file.name,
+                        duration: formatDuration(audio.duration),
+                        durationSeconds: audio.duration,
+                        format: file.type.split('/')[1].toUpperCase() || 'MP3',
+                        channels: audioBuffer.numberOfChannels,
+                        channelMode: audioBuffer.numberOfChannels === 2 ? 'Stereo' : 'Mono',
+                        sampleRate: `${(sampleRate / 1000).toFixed(1)} kHz`,
+                        bitrate: `${bitrate} kbps`,
+                        fileSize: formatFileSize(file.size),
+                        loudness: `${loudness.toFixed(2)} dBFS`,
+                        quality: quality,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    currentAnalysis = analysis;
+                    currentBatchAnalysis = [];
+                    displayResults(analysis);
+                    saveToHistory(analysis);
+                    showLoading(false);
+                    showNotification('success', 'Analysis completed successfully!');
+                    showHomeButton();
+                    URL.revokeObjectURL(url);
+                } catch (error) {
+                    showLoading(false);
+                    showNotification('error', 'Analysis failed: ' + error.message);
+                    URL.revokeObjectURL(url);
                 }
-                const rms = Math.sqrt(sum / channelData.length);
-                const loudness = 20 * Math.log10(rms);
-
-                // Determine quality based on sample rate and bitrate
-                const sampleRate = audioBuffer.sampleRate;
-                const bitrate = Math.round((file.size * 8) / audio.duration / 1000);
-                let quality = 'average';
-                
-                if (sampleRate >= 44100 && bitrate >= 128) {
-                    quality = 'good';
-                } else if (sampleRate < 22050 || bitrate < 64) {
-                    quality = 'poor';
-                }
-
-                const analysis = {
-                    fileName: file.name,
-                    duration: formatDuration(audio.duration),
-                    durationSeconds: audio.duration,
-                    format: file.type.split('/')[1].toUpperCase(),
-                    channels: audioBuffer.numberOfChannels,
-                    channelMode: audioBuffer.numberOfChannels === 2 ? 'Stereo' : 'Mono',
-                    sampleRate: `${(sampleRate / 1000).toFixed(1)} kHz`,
-                    bitrate: `${bitrate} kbps`,
-                    fileSize: formatFileSize(file.size),
-                    loudness: `${loudness.toFixed(2)} dBFS`,
-                    quality: quality,
-                    timestamp: new Date().toISOString()
-                };
-
-                currentAnalysis = analysis;
-                displayResults(analysis);
-                saveToHistory(analysis);
-                showLoading(false);
-                showNotification('success', 'Audio analysis completed successfully!');
-                
-                URL.revokeObjectURL(url);
             });
 
             audio.addEventListener('error', () => {
                 showLoading(false);
-                showNotification('error', 'Failed to load audio file. Please try again.');
+                showNotification('error', 'Failed to load audio file');
                 URL.revokeObjectURL(url);
             });
         }
 
-        // Analyze from URL (simulated)
-        async function analyzeAudioFromUrl(url) {
-            showLoading(true);
+        async function analyzeBatchAudio(files) {
+            showLoading(true, `Analyzing ${files.length} Files...`, 'Processing batch');
+            currentBatchAnalysis = [];
 
-            try {
-                // Create audio element
+            for (let i = 0; i < files.length; i++) {
+                updateLoadingProgress(i, files.length);
+                try {
+                    const analysis = await analyzeFileSilent(files[i]);
+                    currentBatchAnalysis.push(analysis);
+                    saveToHistory(analysis);
+                } catch (error) {
+                    currentBatchAnalysis.push({
+                        fileName: files[i].name,
+                        error: error.message,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+
+            showLoading(false);
+            displayBatchResults(currentBatchAnalysis);
+            showNotification('success', `Analyzed ${currentBatchAnalysis.length} files!`);
+            showHomeButton();
+        }
+
+        async function analyzeBatchUrls(urls) {
+            showLoading(true, `Analyzing ${urls.length} URLs...`, 'Downloading and processing');
+            currentBatchAnalysis = [];
+
+            for (let i = 0; i < urls.length; i++) {
+                updateLoadingProgress(i, urls.length);
+                try {
+                    const audioData = await downloadAudioFromUrl(urls[i]);
+                    const file = new File([audioData.blob], audioData.name, { type: 'audio/mpeg' });
+                    const analysis = await analyzeFileSilent(file);
+                    analysis.sourceUrl = urls[i];
+                    currentBatchAnalysis.push(analysis);
+                    saveToHistory(analysis);
+                } catch (error) {
+                    currentBatchAnalysis.push({
+                        fileName: urls[i].split('/').pop().split('?')[0],
+                        sourceUrl: urls[i],
+                        error: error.message,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+            }
+
+            showLoading(false);
+            displayBatchResults(currentBatchAnalysis);
+            showNotification('success', `Analyzed ${currentBatchAnalysis.filter(a => !a.error).length}/${urls.length} URLs!`);
+            showHomeButton();
+        }
+
+        async function analyzeFileSilent(file) {
+            return new Promise((resolve, reject) => {
                 const audio = new Audio();
-                audio.crossOrigin = 'anonymous';
+                const url = URL.createObjectURL(file);
                 audio.src = url;
 
                 audio.addEventListener('loadedmetadata', async () => {
-                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const response = await fetch(url);
+                        const arrayBuffer = await response.arrayBuffer();
+                        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
-                    // Simulated analysis (real implementation would need CORS-enabled server)
-                    const analysis = {
-                        fileName: url.split('/').pop().split('?')[0],
-                        duration: formatDuration(audio.duration || 180),
-                        durationSeconds: audio.duration || 180,
-                        format: 'MP3',
-                        channels: 2,
-                        channelMode: 'Stereo',
-                        sampleRate: '44.1 kHz',
-                        bitrate: '128 kbps',
-                        fileSize: 'N/A',
-                        loudness: '-12.5 dBFS',
-                        quality: 'good',
-                        timestamp: new Date().toISOString(),
-                        sourceUrl: url
-                    };
+                        const channelData = audioBuffer.getChannelData(0);
+                        let sum = 0;
+                        for (let i = 0; i < channelData.length; i++) {
+                            sum += channelData[i] * channelData[i];
+                        }
+                        const rms = Math.sqrt(sum / channelData.length);
+                        const loudness = 20 * Math.log10(rms);
 
-                    currentAnalysis = analysis;
-                    displayResults(analysis);
-                    saveToHistory(analysis);
-                    showLoading(false);
-                    showNotification('success', 'Audio analysis completed successfully!');
+                        const sampleRate = audioBuffer.sampleRate;
+                        const bitrate = Math.round((file.size * 8) / audio.duration / 1000);
+                        let quality = 'average';
+                        
+                        if (sampleRate >= 48000 && bitrate >= 192) {
+                            quality = 'excellent';
+                        } else if (sampleRate >= 44100 && bitrate >= 128) {
+                            quality = 'good';
+                        } else if (sampleRate < 22050 || bitrate < 64) {
+                            quality = 'poor';
+                        }
+
+                        URL.revokeObjectURL(url);
+                        resolve({
+                            fileName: file.name,
+                            duration: formatDuration(audio.duration),
+                            durationSeconds: audio.duration,
+                            format: file.type.split('/')[1].toUpperCase() || 'MP3',
+                            channels: audioBuffer.numberOfChannels,
+                            channelMode: audioBuffer.numberOfChannels === 2 ? 'Stereo' : 'Mono',
+                            sampleRate: `${(sampleRate / 1000).toFixed(1)} kHz`,
+                            bitrate: `${bitrate} kbps`,
+                            fileSize: formatFileSize(file.size),
+                            loudness: `${loudness.toFixed(2)} dBFS`,
+                            quality: quality,
+                            timestamp: new Date().toISOString()
+                        });
+                    } catch (error) {
+                        URL.revokeObjectURL(url);
+                        reject(error);
+                    }
                 });
 
                 audio.addEventListener('error', () => {
-                    throw new Error('Failed to load audio from URL');
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Failed to load audio'));
                 });
+            });
+        }
+
+        async function analyzeAudioFromUrl(url) {
+            showLoading(true, 'Downloading Audio...', 'Fetching from URL');
+
+            try {
+                const audioData = await downloadAudioFromUrl(url);
+                document.getElementById('loadingText').textContent = 'Analyzing Audio...';
+                document.getElementById('loadingSubtext').textContent = 'Processing file';
+                
+                const file = new File([audioData.blob], audioData.name, { type: 'audio/mpeg' });
+                const analysis = await analyzeFileSilent(file);
+                analysis.sourceUrl = url;
+
+                currentAnalysis = analysis;
+                currentBatchAnalysis = [];
+                displayResults(analysis);
+                saveToHistory(analysis);
+                showLoading(false);
+                showNotification('success', 'Downloaded and analyzed!');
+                showHomeButton();
             } catch (error) {
                 showLoading(false);
-                showNotification('error', 'Failed to analyze audio from URL. Please check the URL and CORS settings.');
+                showNotification('error', error.message);
             }
         }
 
-        // Display results
         function displayResults(analysis) {
             document.getElementById('uploadSection').style.display = 'none';
             document.getElementById('resultsSection').classList.add('active');
+            document.getElementById('batchResults').innerHTML = '';
 
-            // Quality badge
-            const qualityBadge = document.getElementById('qualityBadge');
             const qualityEmoji = {
+                excellent: '🌟',
                 good: '✅',
                 average: '⚠️',
                 poor: '❌'
             };
-            qualityBadge.innerHTML = `
+
+            document.getElementById('qualityBadge').innerHTML = `
                 <span class="quality-badge ${analysis.quality}">
-                    ${qualityEmoji[analysis.quality]} ${analysis.quality.charAt(0).toUpperCase() + analysis.quality.slice(1)} Quality
+                    ${qualityEmoji[analysis.quality]} ${analysis.quality.toUpperCase()} Quality
                 </span>
             `;
 
-            // Results grid
-            const resultsGrid = document.getElementById('resultsGrid');
-            resultsGrid.innerHTML = `
+            document.getElementById('resultsGrid').innerHTML = `
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">📄</div>
                         <h3>File Name</h3>
                     </div>
                     <div class="result-value">${analysis.fileName}</div>
+                    ${analysis.sourceUrl ? `<div class="result-subtext">From URL</div>` : ''}
                 </div>
-
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">⏱️</div>
@@ -1006,7 +985,6 @@
                     <div class="result-value">${analysis.duration}</div>
                     <div class="result-subtext">${analysis.durationSeconds.toFixed(2)} seconds</div>
                 </div>
-
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">🎵</div>
@@ -1014,7 +992,6 @@
                     </div>
                     <div class="result-value">${analysis.format}</div>
                 </div>
-
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">🎚️</div>
@@ -1023,7 +1000,6 @@
                     <div class="result-value">${analysis.channelMode}</div>
                     <div class="result-subtext">${analysis.channels} channel${analysis.channels > 1 ? 's' : ''}</div>
                 </div>
-
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">📊</div>
@@ -1031,7 +1007,6 @@
                     </div>
                     <div class="result-value">${analysis.sampleRate}</div>
                 </div>
-
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">💾</div>
@@ -1039,7 +1014,6 @@
                     </div>
                     <div class="result-value">${analysis.bitrate}</div>
                 </div>
-
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">📏</div>
@@ -1047,7 +1021,6 @@
                     </div>
                     <div class="result-value">${analysis.fileSize}</div>
                 </div>
-
                 <div class="result-card">
                     <div class="result-card-header">
                         <div class="result-icon">🔊</div>
@@ -1059,7 +1032,60 @@
             `;
         }
 
-        // Helper functions
+        function displayBatchResults(results) {
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('resultsSection').classList.add('active');
+            document.getElementById('resultsGrid').innerHTML = '';
+            
+            document.getElementById('qualityBadge').innerHTML = `
+                <span class="quality-badge good">
+                    ✅ ${results.filter(r => !r.error).length}/${results.length} Analyzed
+                </span>
+            `;
+
+            const batchResults = document.getElementById('batchResults');
+            batchResults.innerHTML = '<h2>📊 Batch Analysis Results</h2>';
+
+            results.forEach((analysis, index) => {
+                const qualityEmoji = {
+                    excellent: '🌟',
+                    good: '✅',
+                    average: '⚠️',
+                    poor: '❌'
+                };
+
+                if (analysis.error) {
+                    batchResults.innerHTML += `
+                        <div class="batch-item" style="border-left-color: var(--error);">
+                            <h3 style="color: var(--error); margin-bottom: 12px;">❌ ${analysis.fileName}</h3>
+                            <p style="color: var(--text-secondary);">Error: ${analysis.error}</p>
+                        </div>
+                    `;
+                } else {
+                    batchResults.innerHTML += `
+                        <div class="batch-item">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                                <h3 style="color: var(--text-primary);">${index + 1}. ${analysis.fileName}</h3>
+                                <span class="quality-badge ${analysis.quality}">
+                                    ${qualityEmoji[analysis.quality]} ${analysis.quality.toUpperCase()}
+                                </span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; color: var(--text-secondary); font-size: 14px;">
+                                <div><strong>Duration:</strong> ${analysis.duration}</div>
+                                <div><strong>Format:</strong> ${analysis.format}</div>
+                                <div><strong>Channels:</strong> ${analysis.channelMode}</div>
+                                <div><strong>Sample Rate:</strong> ${analysis.sampleRate}</div>
+                                <div><strong>Bitrate:</strong> ${analysis.bitrate}</div>
+                                <div><strong>Size:</strong> ${analysis.fileSize}</div>
+                                <div><strong>Loudness:</strong> ${analysis.loudness}</div>
+                            </div>
+                            ${analysis.sourceUrl ? `<p style="margin-top: 12px; color: var(--text-secondary); font-size: 12px;">Source: ${analysis.sourceUrl}</p>` : ''}
+                        </div>
+                    `;
+                }
+            });
+        }
+
         function formatDuration(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
@@ -1074,8 +1100,19 @@
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }
 
-        function showLoading(show) {
+        function showLoading(show, title = 'Analyzing...', subtitle = 'Please wait') {
             document.getElementById('loadingOverlay').classList.toggle('active', show);
+            if (show) {
+                document.getElementById('loadingText').textContent = title;
+                document.getElementById('loadingSubtext').textContent = subtitle;
+                document.getElementById('progressFill').style.width = '0%';
+            }
+        }
+
+        function updateLoadingProgress(current, total) {
+            const percent = ((current + 1) / total) * 100;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('loadingText').textContent = `Analyzing ${current + 1}/${total}...`;
         }
 
         function showNotification(type, message) {
@@ -1088,109 +1125,521 @@
             msg.textContent = message;
             
             notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 4000);
+            setTimeout(() => notification.classList.remove('show'), 5000);
         }
 
-        function analyzeNew() {
+        function showHomeButton() {
+            document.getElementById('homeBtn').classList.remove('hidden');
+        }
+
+        function goHome() {
             document.getElementById('resultsSection').classList.remove('active');
             document.getElementById('uploadSection').style.display = 'block';
             document.getElementById('fileInput').value = '';
-            document.getElementById('audioUrl').value = '';
+            document.querySelectorAll('#urlContainer .url-input').forEach(input => input.value = '');
+            document.getElementById('homeBtn').classList.add('hidden');
+            currentAnalysis = null;
+            currentBatchAnalysis = [];
         }
 
-        // Copy report
-        function copyReport() {
-            if (!currentAnalysis) return;
+        function analyzeNew() {
+            goHome();
+        }
+
+        function shareResults() {
+            const text = currentAnalysis ? 
+                `Audio Analysis: ${currentAnalysis.fileName} - ${currentAnalysis.quality.toUpperCase()} quality` :
+                `Analyzed ${currentBatchAnalysis.length} audio files`;
             
-            const report = `
-AUDIO ANALYSIS REPORT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            if (navigator.share) {
+                navigator.share({ title: 'Sonic Insights', text: text })
+                    .then(() => showNotification('success', 'Shared successfully!'))
+                    .catch(() => {});
+            } else {
+                navigator.clipboard.writeText(text);
+                showNotification('success', 'Link copied to clipboard!');
+            }
+        }
 
-File Name: ${currentAnalysis.fileName}
-Duration: ${currentAnalysis.duration}
-Format: ${currentAnalysis.format}
-Channels: ${currentAnalysis.channelMode} (${currentAnalysis.channels})
-Sample Rate: ${currentAnalysis.sampleRate}
-Bitrate: ${currentAnalysis.bitrate}
-File Size: ${currentAnalysis.fileSize}
-Loudness: ${currentAnalysis.loudness}
-Quality: ${currentAnalysis.quality.toUpperCase()}
-
-Generated: ${new Date(currentAnalysis.timestamp).toLocaleString()}
-            `.trim();
+        function copyReport() {
+            let report = '';
+            
+            if (currentBatchAnalysis.length > 0) {
+                report = `SONIC INSIGHTS - BATCH ANALYSIS\n${'━'.repeat(50)}\n\n`;
+                currentBatchAnalysis.forEach((a, i) => {
+                    if (!a.error) {
+                        report += `${i + 1}. ${a.fileName}\n`;
+                        report += `   Duration: ${a.duration} | Format: ${a.format}\n`;
+                        report += `   Quality: ${a.quality.toUpperCase()} | Bitrate: ${a.bitrate}\n\n`;
+                    }
+                });
+            } else if (currentAnalysis) {
+                report = `SONIC INSIGHTS - AUDIO ANALYSIS\n${'━'.repeat(50)}\n\n`;
+                report += `File: ${currentAnalysis.fileName}\n`;
+                report += `Duration: ${currentAnalysis.duration}\n`;
+                report += `Format: ${currentAnalysis.format}\n`;
+                report += `Channels: ${currentAnalysis.channelMode}\n`;
+                report += `Sample Rate: ${currentAnalysis.sampleRate}\n`;
+                report += `Bitrate: ${currentAnalysis.bitrate}\n`;
+                report += `Size: ${currentAnalysis.fileSize}\n`;
+                report += `Loudness: ${currentAnalysis.loudness}\n`;
+                report += `Quality: ${currentAnalysis.quality.toUpperCase()}\n\n`;
+            }
+            
+            report += `Generated: ${new Date().toLocaleString()}`;
             
             navigator.clipboard.writeText(report).then(() => {
                 showNotification('success', 'Report copied to clipboard!');
             });
         }
 
-        // Download report
         function downloadReport() {
-            if (!currentAnalysis) return;
-            
-            const report = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Audio Analysis Report - ${currentAnalysis.fileName}</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
-        h1 { color: #6366f1; border-bottom: 3px solid #6366f1; padding-bottom: 10px; }
-        .quality { padding: 10px 20px; border-radius: 20px; display: inline-block; font-weight: bold; }
-        .good { background: #d1fae5; color: #065f46; }
-        .average { background: #fef3c7; color: #92400e; }
-        .poor { background: #fee2e2; color: #991b1b; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
-        td:first-child { font-weight: bold; color: #6b7280; width: 40%; }
-        .footer { margin-top: 40px; color: #6b7280; font-size: 14px; text-align: center; }
-    </style>
-</head>
-<body>
-    <h1>🎵 Audio Analysis Report</h1>
-    <p><span class="quality ${currentAnalysis.quality}">${currentAnalysis.quality.toUpperCase()} Quality</span></p>
-    
-    <table>
-        <tr><td>File Name</td><td>${currentAnalysis.fileName}</td></tr>
-        <tr><td>Duration</td><td>${currentAnalysis.duration}</td></tr>
-        <tr><td>Format</td><td>${currentAnalysis.format}</td></tr>
-        <tr><td>Channels</td><td>${currentAnalysis.channelMode} (${currentAnalysis.channels})</td></tr>
-        <tr><td>Sample Rate</td><td>${currentAnalysis.sampleRate}</td></tr>
-        <tr><td>Bitrate</td><td>${currentAnalysis.bitrate}</td></tr>
-        <tr><td>File Size</td><td>${currentAnalysis.fileSize}</td></tr>
-        <tr><td>Loudness</td><td>${currentAnalysis.loudness}</td></tr>
-    </table>
-    
-    <div class="footer">
-        Generated on ${new Date(currentAnalysis.timestamp).toLocaleString()}<br>
-        Audio Analyzer - Professional Audio Analysis Tool
-    </div>
-</body>
-</html>
-            `.trim();
+            const data = currentBatchAnalysis.length > 0 ? currentBatchAnalysis : [currentAnalysis];
+            const report = generateHTMLReport(data);
             
             const blob = new Blob([report], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `audio-report-${currentAnalysis.fileName.replace(/\.[^/.]+$/, '')}.html`;
+            a.download = `sonic-insights-${Date.now()}.html`;
             a.click();
             URL.revokeObjectURL(url);
             
-            showNotification('success', 'Report downloaded successfully!');
+            showNotification('success', 'Report downloaded!');
         }
 
-        // History management
+        function generateHTMLReport(data) {
+            let rows = '';
+            data.forEach((a, i) => {
+                if (!a.error) {
+                    rows += `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${a.fileName}</td>
+                            <td>${a.duration}</td>
+                            <td>${a.format}</td>
+                            <td>${a.channelMode}</td>
+                            <td>${a.sampleRate}</td>
+                            <td>${a.bitrate}</td>
+                            <td>${a.fileSize}</td>
+                            <td>${a.loudness}</td>
+                            <td class="${a.quality}">${a.quality.toUpperCase()}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Sonic Insights Report</title><style>body{font-family:Arial;max-width:1200px;margin:40px auto;padding:20px}h1{color:#8b5cf6;border-bottom:3px solid #8b5cf6;padding-bottom:10px}table{width:100%;border-collapse:collapse;margin:20px 0}th,td{padding:12px;border:1px solid #e5e7eb;text-align:left}th{background:#8b5cf6;color:white}.excellent{color:#10b981;font-weight:bold}.good{color:#10b981;font-weight:bold}.average{color:#f59e0b;font-weight:bold}.poor{color:#ef4444;font-weight:bold}.footer{margin-top:40px;color:#6b7280;text-align:center}</style></head><body><h1>🎵 Sonic Insights Report</h1><p><strong>Generated:</strong> ${new Date().toLocaleString()}</p><p><strong>Total Files:</strong> ${data.length}</p><table><thead><tr><th>#</th><th>File</th><th>Duration</th><th>Format</th><th>Channels</th><th>Sample Rate</th><th>Bitrate</th><th>Size</th><th>Loudness</th><th>Quality</th></tr></thead><tbody>${rows}</tbody></table><div class="footer">Created with ❤️ by Gaurav Patil<br>Sonic Insights - Audio Intelligence Platform</div></body></html>`;
+        }
+
+        function exportPDF() {
+            showLoading(true, 'Generating PDF...', 'Creating beautiful report');
+            
+            setTimeout(() => {
+                const data = currentBatchAnalysis.length > 0 ? currentBatchAnalysis : [currentAnalysis];
+                const pdfHTML = generatePDFReport(data);
+                
+                // Create a print-friendly page
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(pdfHTML);
+                printWindow.document.close();
+                
+                // Wait for content to load, then trigger print
+                printWindow.onload = function() {
+                    setTimeout(() => {
+                        printWindow.print();
+                        showLoading(false);
+                        showNotification('success', 'PDF report ready! Use Print dialog to save as PDF');
+                    }, 500);
+                };
+            }, 800);
+        }
+
+        function generatePDFReport(data) {
+            const successCount = data.filter(a => !a.error).length;
+            const qualityEmoji = {
+                excellent: '🌟',
+                good: '✅',
+                average: '⚠️',
+                poor: '❌'
+            };
+            
+            let rows = '';
+            data.forEach((a, i) => {
+                if (!a.error) {
+                    rows += `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td class="file-name">${a.fileName}</td>
+                            <td>${a.duration}</td>
+                            <td>${a.format}</td>
+                            <td>${a.channelMode}</td>
+                            <td>${a.sampleRate}</td>
+                            <td>${a.bitrate}</td>
+                            <td>${a.fileSize}</td>
+                            <td>${a.loudness}</td>
+                            <td><span class="quality-tag ${a.quality}">${qualityEmoji[a.quality]} ${a.quality.toUpperCase()}</span></td>
+                        </tr>
+                    `;
+                }
+            });
+
+            return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sonic Insights - Audio Analysis Report</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 20mm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #ffffff;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 4px solid #8b5cf6;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .logo-icon {
+            font-size: 48px;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+        
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .report-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .info-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #8b5cf6;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        th {
+            padding: 16px 12px;
+            text-align: left;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 13px;
+            color: #374151;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            color: #1f2937;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+        
+        .quality-tag {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        
+        .quality-tag.excellent {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+            border: 2px solid #10b981;
+        }
+        
+        .quality-tag.good {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .quality-tag.average {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        .quality-tag.poor {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e5e7eb;
+            text-align: center;
+        }
+        
+        .footer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        
+        .footer-text {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 12px;
+        }
+        
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 30px 0;
+        }
+        
+        .summary-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .summary-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .summary-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #8b5cf6;
+            margin-bottom: 4px;
+        }
+        
+        .summary-label {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        @media print {
+            body {
+                padding: 20px;
+            }
+            
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo-icon">🎵</div>
+            <div>
+                <h1>Sonic Insights</h1>
+                <p class="subtitle">Professional Audio Analysis Report</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="report-info">
+        <div class="info-item">
+            <div class="info-label">📅 Generated</div>
+            <div class="info-value" style="font-size: 16px;">${new Date().toLocaleDateString()}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">📊 Total Files</div>
+            <div class="info-value">${data.length}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">✅ Analyzed</div>
+            <div class="info-value">${successCount}</div>
+        </div>
+    </div>
+    
+    <div class="summary-section">
+        <div class="summary-card">
+            <div class="summary-icon">🌟</div>
+            <div class="summary-value">${data.filter(a => a.quality === 'excellent').length}</div>
+            <div class="summary-label">Excellent</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-icon">✅</div>
+            <div class="summary-value">${data.filter(a => a.quality === 'good').length}</div>
+            <div class="summary-label">Good</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-icon">⚠️</div>
+            <div class="summary-value">${data.filter(a => a.quality === 'average').length}</div>
+            <div class="summary-label">Average</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-icon">❌</div>
+            <div class="summary-value">${data.filter(a => a.quality === 'poor').length}</div>
+            <div class="summary-label">Poor</div>
+        </div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>File Name</th>
+                <th>Duration</th>
+                <th>Format</th>
+                <th>Channels</th>
+                <th>Sample Rate</th>
+                <th>Bitrate</th>
+                <th>Size</th>
+                <th>Loudness</th>
+                <th>Quality</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${rows}
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <div class="footer-badge">
+            <span>Created with</span>
+            <span>❤️</span>
+            <span>by Gaurav Patil</span>
+        </div>
+        <div class="footer-text">
+            Sonic Insights - Advanced Audio Intelligence Platform<br>
+            © ${new Date().getFullYear()} All rights reserved.
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+
+        function exportData() {
+            const data = {
+                history: analysisHistory,
+                currentAnalysis: currentAnalysis,
+                batchAnalysis: currentBatchAnalysis,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sonic-insights-data-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification('success', 'Data exported successfully!');
+        }
+
         function saveToHistory(analysis) {
             analysisHistory.unshift(analysis);
-            if (analysisHistory.length > 10) {
-                analysisHistory = analysisHistory.slice(0, 10);
+            if (analysisHistory.length > 50) {
+                analysisHistory = analysisHistory.slice(0, 50);
             }
-            localStorage.setItem('audioAnalysisHistory', JSON.stringify(analysisHistory));
+            try {
+                localStorage.setItem('sonicInsightsHistory', JSON.stringify(analysisHistory));
+            } catch(e) {}
         }
 
         function showHistory() {
@@ -1201,12 +1650,12 @@ Generated: ${new Date(currentAnalysis.timestamp).toLocaleString()}
                 historyList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">No history yet. Analyze your first audio file!</p>';
             } else {
                 historyList.innerHTML = analysisHistory.map(item => `
-                    <div class="history-item" onclick='loadFromHistory(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
-                        <div class="history-item-header">
-                            <div class="history-item-title">📄 ${item.fileName}</div>
-                            <div class="history-item-date">${new Date(item.timestamp).toLocaleDateString()}</div>
+                    <div class="history-item">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong>📄 ${item.fileName}</strong>
+                            <span style="color: var(--text-secondary); font-size: 12px;">${new Date(item.timestamp).toLocaleString()}</span>
                         </div>
-                        <div class="history-item-details">
+                        <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--text-secondary);">
                             <span>⏱️ ${item.duration}</span>
                             <span>🎵 ${item.format}</span>
                             <span>🎚️ ${item.channelMode}</span>
@@ -1223,17 +1672,8 @@ Generated: ${new Date(currentAnalysis.timestamp).toLocaleString()}
             document.getElementById('historyModal').classList.remove('active');
         }
 
-        function loadFromHistory(analysis) {
-            currentAnalysis = analysis;
-            displayResults(analysis);
-            closeHistory();
-        }
-
-        // Close modals on outside click
         document.getElementById('historyModal').addEventListener('click', (e) => {
-            if (e.target.id === 'historyModal') {
-                closeHistory();
-            }
+            if (e.target.id === 'historyModal') closeHistory();
         });
     </script>
 </body>
