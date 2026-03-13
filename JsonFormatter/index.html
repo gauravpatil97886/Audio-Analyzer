@@ -581,6 +581,389 @@
     header { padding: 32px 0 24px; }
     .header-stats { display: none; }
   }
+
+  /* Toast notification */
+  #toast-container {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    min-width: 240px;
+    max-width: 340px;
+    pointer-events: all;
+    position: relative;
+    overflow: hidden;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+  }
+
+  .toast.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  .toast.hide {
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .toast-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(74,222,158,0.12);
+    border: 1px solid rgba(74,222,158,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .toast-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke: var(--accent);
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .toast-body { flex: 1; min-width: 0; }
+
+  .toast-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    font-family: var(--display);
+    margin-bottom: 2px;
+  }
+
+  .toast-sub {
+    font-size: 11px;
+    color: var(--text2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 0 0 0 12px;
+    width: 100%;
+    transform-origin: left;
+    animation: progress-shrink 2.5s linear forwards;
+  }
+
+  @keyframes progress-shrink {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+  }
+
+  /* Row copy animation */
+  .value-row.flash {
+    animation: row-flash 0.5s ease;
+  }
+
+  @keyframes row-flash {
+    0% { background: transparent; }
+    30% { background: rgba(74,222,158,0.08); }
+    100% { background: transparent; }
+  }
+
+  /* Copy btn pulse */
+  @keyframes btn-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(74,222,158,0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(74,222,158,0); }
+    100% { box-shadow: 0 0 0 0 rgba(74,222,158,0); }
+  }
+
+  .copy-btn.pulse { animation: btn-pulse 0.5s ease; }
+
+  /* ── Site Footer ── */
+  .site-footer {
+    position: relative;
+    margin-top: 80px;
+    overflow: hidden;
+  }
+
+  .footer-glow {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    opacity: 0.5;
+  }
+
+  .footer-inner {
+    padding: 48px 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* Creator card */
+  .creator-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+    animation: footer-fadein 0.6s ease both;
+    animation-delay: 0.1s;
+  }
+
+  .creator-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(74,222,158,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  @keyframes footer-fadein {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .creator-avatar {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+  }
+
+  .creator-avatar span {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(74,222,158,0.15), rgba(56,189,248,0.15));
+    border: 1px solid rgba(74,222,158,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .avatar-ring {
+    position: absolute;
+    inset: -3px;
+    border-radius: 17px;
+    border: 1px solid rgba(74,222,158,0.15);
+    animation: ring-pulse 3s ease infinite;
+  }
+
+  @keyframes ring-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+
+  .creator-info { flex: 1; }
+
+  .creator-label {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .creator-name {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  .creator-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(74,222,158,0.08);
+    border: 1px solid rgba(74,222,158,0.2);
+    border-radius: 999px;
+    padding: 5px 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  .footer-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border2), transparent);
+  }
+
+  /* Support section */
+  .support-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 28px 24px;
+    animation: footer-fadein 0.6s ease both;
+    animation-delay: 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .support-section::after {
+    content: '?';
+    position: absolute;
+    right: -10px; top: -20px;
+    font-family: var(--display);
+    font-size: 140px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.015);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .support-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-family: var(--display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .support-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .support-icon svg {
+    width: 16px; height: 16px;
+    stroke: var(--accent2);
+  }
+
+  .support-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    max-width: 560px;
+  }
+
+  .support-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .support-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .support-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  .support-btn.primary {
+    background: var(--accent);
+    color: #051a0e;
+    border: none;
+  }
+  .support-btn.primary:hover { background: #6eeab4; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,222,158,0.2); }
+
+  .support-btn.ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .support-btn.ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); transform: translateY(-2px); }
+
+  /* Footer bottom */
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 4px;
+    animation: footer-fadein 0.6s ease both;
+    animation-delay: 0.3s;
+  }
+
+  .footer-copy {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+  }
+
+  .footer-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .ftag {
+    font-size: 10px;
+    color: var(--text3);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+    letter-spacing: 0.06em;
+  }
+
+  @media (max-width: 500px) {
+    .creator-badge { display: none; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
 </style>
 </head>
 <body>
@@ -655,9 +1038,69 @@
     </div>
   </div>
 
-  <div class="page-footer">
-    Built with ♥ &nbsp;·&nbsp; JSON Key Explorer &nbsp;·&nbsp; No data leaves your browser
-  </div>
+  <div id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-glow"></div>
+
+    <div class="footer-inner">
+
+      <!-- Creator card -->
+      <div class="creator-card">
+        <div class="creator-avatar">
+          <span>GP</span>
+          <div class="avatar-ring"></div>
+        </div>
+        <div class="creator-info">
+          <div class="creator-label">crafted by</div>
+          <div class="creator-name">Gaurav Patil</div>
+        </div>
+        <div class="creator-badge">
+          <span class="badge-dot"></span>
+          builder
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="footer-divider"></div>
+
+      <!-- Support section -->
+      <div class="support-section">
+        <div class="support-heading">
+          <div class="support-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <span>Need help or found a bug?</span>
+        </div>
+        <p class="support-desc">If something isn't working as expected, feel free to reach out. All data stays in your browser — nothing is ever sent to a server.</p>
+        <div class="support-actions">
+          <a href="mailto:gauravpatil@example.com" class="support-btn primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Report an Issue
+          </a>
+          <a href="https://github.com" target="_blank" class="support-btn ghost">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            View on GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- Bottom strip -->
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 JSON Key Explorer · Gaurav Patil</span>
+        <div class="footer-tags">
+          <span class="ftag">zero dependencies</span>
+          <span class="ftag">client-side only</span>
+          <span class="ftag">open source</span>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
 </div>
 
 <script>
@@ -835,21 +1278,76 @@ function filterValues() {
     `showing ${filtered.length} of ${allValues.length} values for "${activeKey}"`;
 }
 
-function copyVal(btn, val) {
-  navigator.clipboard.writeText(val).then(() => {
-    btn.textContent = 'copied!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+function writeToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise((resolve, reject) => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('execCommand failed'));
+    } catch(e) {
+      document.body.removeChild(ta);
+      reject(e);
+    }
   });
 }
 
-function copyAll() {
-  const vals = allValues.map(v => v.val === null ? 'null' : String(v.val));
-  navigator.clipboard.writeText(vals.join('\n')).then(() => {
-    const btn = document.querySelector('.btn-copy-all');
-    btn.textContent = 'copied all!';
-    setTimeout(() => btn.textContent = 'copy all values', 1500);
+function showToast(title, subtitle) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `
+    <div class="toast-icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="toast-body">
+      <div class="toast-title">${title}</div>
+      <div class="toast-sub">${subtitle}</div>
+    </div>
+    <div class="toast-progress"></div>
+  `;
+  container.appendChild(toast);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => toast.classList.add('show'));
   });
+  setTimeout(() => {
+    toast.classList.remove('show');
+    toast.classList.add('hide');
+    setTimeout(() => toast.remove(), 350);
+  }, 2500);
+}
+
+function copyVal(btn, val) {
+  writeToClipboard(val).then(() => {
+    btn.textContent = '✓ copied';
+    btn.classList.add('copied', 'pulse');
+    const row = btn.closest('.value-row');
+    if (row) { row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 500); }
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied', 'pulse'); }, 1800);
+    showToast('Copied!', val.length > 40 ? val.slice(0, 40) + '…' : val);
+  }).catch(() => showToast('Failed', 'Could not access clipboard'));
+}
+
+function copyAll() {
+  if (!activeKey) return;
+  const vals = allValues.map(v => v.val === null || v.val === undefined ? 'null' : String(v.val));
+  const text = vals.join('\n');
+  writeToClipboard(text).then(() => {
+    const btn = document.querySelector('.btn-copy-all');
+    if (btn) {
+      btn.textContent = '✓ all copied!';
+      setTimeout(() => btn.textContent = 'copy all values', 2000);
+    }
+    showToast('All values copied!', `${vals.length} values from "${activeKey}"`);
+  }).catch(() => showToast('Failed', 'Could not access clipboard'));
 }
 
 function escHtml(s) {
