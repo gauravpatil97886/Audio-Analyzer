@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON Key Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0e;
+    --surface: #111318;
+    --surface2: #181c24;
+    --surface3: #1e2330;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --accent: #4ade9e;
+    --accent2: #38bdf8;
+    --accent3: #f472b6;
+    --text: #e8eaf0;
+    --text2: #8b92a8;
+    --text3: #4a5168;
+    --error: #f87171;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(74,222,158,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74,222,158,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow orbs */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(74,222,158,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .orb2 {
+    position: fixed;
+    bottom: -200px;
+    left: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(56,189,248,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* Header */
+  header {
+    padding: 48px 0 40px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .logo-area {}
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .logo-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 16px;
+    flex-shrink: 0;
+    margin-top: 8px;
+  }
+
+  .stat-pill {
+    font-size: 11px;
+    color: var(--text3);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 12px;
+    letter-spacing: 0.06em;
+  }
+
+  /* Input Panel */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .panel:focus-within {
+    border-color: var(--border2);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .panel-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+  .dots { display: flex; gap: 6px; }
+
+  .panel-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .btn-clear {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-clear:hover { color: var(--text2); border-color: var(--border2); }
+
+  .btn-sample {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    background: rgba(56,189,248,0.08);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-sample:hover { background: rgba(56,189,248,0.14); }
+
+  textarea {
+    width: 100%;
+    min-height: 180px;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: vertical;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    font-weight: 300;
+    color: var(--text);
+    padding: 16px;
+    line-height: 1.7;
+    caret-color: var(--accent);
+  }
+
+  textarea::placeholder { color: var(--text3); }
+
+  .parse-bar {
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .error-msg {
+    font-size: 12px;
+    color: var(--error);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .char-count { font-size: 11px; color: var(--text3); }
+
+  .btn-parse {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: var(--accent);
+    color: #051a0e;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 24px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .btn-parse:hover { background: #6eeab4; transform: translateY(-1px); }
+  .btn-parse:active { transform: translateY(0); }
+
+  .btn-parse svg { width: 14px; height: 14px; }
+
+  /* Keys section */
+  .keys-section {
+    display: none;
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .keys-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .key-chip {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 400;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .key-chip:hover {
+    border-color: rgba(74,222,158,0.3);
+    color: var(--text);
+    background: var(--surface3);
+  }
+
+  .key-chip.active {
+    border-color: var(--accent);
+    background: rgba(74,222,158,0.1);
+    color: var(--accent);
+  }
+
+  .key-chip .type-badge {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .key-chip.active .type-badge {
+    background: rgba(74,222,158,0.15);
+    color: rgba(74,222,158,0.7);
+  }
+
+  /* Results */
+  .results-section { display: none; animation: fadeUp 0.3s ease; }
+
+  .results-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .results-panel-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .results-key-name {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .results-key-name::before { content: '→ '; color: var(--text3); }
+
+  .results-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .meta-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .meta-badge.unique { border-color: rgba(244,114,182,0.3); color: var(--accent3); }
+  .meta-badge.nulls { border-color: rgba(251,191,36,0.3); color: #fbbf24; }
+
+  .search-bar {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input::placeholder { color: var(--text3); }
+  .search-input:focus { border-color: var(--border2); }
+
+  .values-list { max-height: 480px; overflow-y: auto; }
+
+  .values-list::-webkit-scrollbar { width: 4px; }
+  .values-list::-webkit-scrollbar-track { background: transparent; }
+  .values-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .value-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  .value-row:last-child { border-bottom: none; }
+  .value-row:hover { background: var(--surface2); }
+
+  .row-index {
+    font-size: 11px;
+    color: var(--text3);
+    padding: 12px 14px;
+    min-width: 48px;
+    text-align: right;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    user-select: none;
+  }
+
+  .row-value {
+    font-size: 12.5px;
+    color: var(--text);
+    padding: 12px 16px;
+    line-height: 1.5;
+    word-break: break-all;
+    flex: 1;
+  }
+
+  .row-value.is-null { color: var(--text3); font-style: italic; }
+  .row-value.is-empty { color: var(--text3); font-style: italic; }
+  .row-value.is-number { color: var(--accent2); }
+  .row-value.is-bool { color: var(--accent3); }
+
+  .copy-btn {
+    flex-shrink: 0;
+    margin: 8px 12px 8px 0;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text3);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    opacity: 0;
+  }
+  .value-row:hover .copy-btn { opacity: 1; }
+  .copy-btn:hover { color: var(--accent); border-color: rgba(74,222,158,0.3); }
+  .copy-btn.copied { color: var(--accent); border-color: rgba(74,222,158,0.3); }
+
+  .no-results {
+    padding: 40px;
+    text-align: center;
+    color: var(--text3);
+    font-size: 13px;
+  }
+
+  /* Footer */
+  .results-footer {
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .footer-info { font-size: 11px; color: var(--text3); }
+
+  .btn-copy-all {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-copy-all:hover { color: var(--accent); border-color: rgba(74,222,158,0.3); }
+
+  /* Summary cards */
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+
+  .card-val {
+    font-family: var(--display);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .card-label { font-size: 11px; color: var(--text3); letter-spacing: 0.06em; }
+
+  /* Page footer */
+  .page-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+  }
+
+  .page-footer a { color: var(--accent); text-decoration: none; }
+  .page-footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    header { padding: 32px 0 24px; }
+    .header-stats { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="orb2"></div>
+<div class="container">
+
+  <header>
+    <div class="logo-area">
+      <div class="logo-badge">Tool · v1.0</div>
+      <h1>JSON Key<br><span>Explorer</span></h1>
+      <p class="subtitle">Paste any API response → instantly extract<br>values for any key across all records</p>
+    </div>
+    <div class="header-stats">
+      <span class="stat-pill">Zero dependencies</span>
+      <span class="stat-pill">Client-side only</span>
+    </div>
+  </header>
+
+  <!-- Input Panel -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">
+        <div class="dots">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        json input
+      </div>
+      <div class="panel-actions">
+        <button class="btn-clear" onclick="clearAll()">clear</button>
+        <button class="btn-sample" onclick="loadSample()">load sample</button>
+      </div>
+    </div>
+    <textarea id="json-input" placeholder='Paste your JSON here...  { "data": [ { "id": "...", "name": "..." } ] }'></textarea>
+    <div class="parse-bar">
+      <div>
+        <div id="error-msg" class="error-msg" style="display:none"></div>
+        <div class="char-count" id="char-count">0 characters</div>
+      </div>
+      <button class="btn-parse" onclick="parseJSON()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Parse JSON
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards" id="summary-cards" style="display:none"></div>
+
+  <!-- Keys Section -->
+  <div class="keys-section" id="keys-section">
+    <div class="section-label">detected keys — click to explore</div>
+    <div class="keys-grid" id="keys-grid"></div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-section" id="results-section">
+    <div class="results-panel">
+      <div class="results-panel-header">
+        <div class="results-key-name" id="results-key-name"></div>
+        <div class="results-meta" id="results-meta"></div>
+      </div>
+      <div class="search-bar">
+        <input type="text" class="search-input" id="search-input" placeholder="filter values..." oninput="filterValues()">
+      </div>
+      <div class="values-list" id="values-list"></div>
+      <div class="results-footer">
+        <span class="footer-info" id="footer-info"></span>
+        <button class="btn-copy-all" onclick="copyAll()">copy all values</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    Built with ♥ &nbsp;·&nbsp; JSON Key Explorer &nbsp;·&nbsp; No data leaves your browser
+  </div>
+</div>
+
+<script>
+let parsedItems = [];
+let activeKey = null;
+let allValues = [];
+
+const textarea = document.getElementById('json-input');
+const errorMsg = document.getElementById('error-msg');
+const charCount = document.getElementById('char-count');
+
+textarea.addEventListener('input', () => {
+  charCount.textContent = textarea.value.length.toLocaleString() + ' characters';
+});
+
+function showError(msg) {
+  errorMsg.style.display = 'flex';
+  errorMsg.innerHTML = '&#9888; ' + msg;
+}
+
+function hideError() {
+  errorMsg.style.display = 'none';
+}
+
+function clearAll() {
+  textarea.value = '';
+  charCount.textContent = '0 characters';
+  hideError();
+  document.getElementById('keys-section').style.display = 'none';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('summary-cards').style.display = 'none';
+  parsedItems = [];
+  activeKey = null;
+}
+
+function loadSample() {
+  const sample = {"StatusCode":200,"Message":"Success","Body":{"count":5,"list":[{"id":"36a49d1c93ce4b9b","serviceName":"Jiffy","firstName":"","leadStatusName":"created","createdBy":"finx-sso","createdOn":"2026-03-11 11:54:01","leadSource":"CHOICEINDIA","priority":"MEDIUM","referredId":"C0020013","expiryDate":"2026-04-11","tag":""},{"id":"8e03f780ca6c439b","serviceName":"Jiffy","firstName":"SHILPA G BHASIN","leadStatusName":"created","createdBy":"bulk-upload-utility","createdOn":"2026-02-13 15:19:14","leadSource":"CHOICEINDIA","priority":"LOW","referredId":"CBA0532362","expiryDate":"2026-04-09","tag":""},{"id":"c7473b1b36eb4360","serviceName":"Jiffy","firstName":"SARITA KIRANKUMAR YADAV","leadStatusName":"created","createdBy":"bulk-upload-utility","createdOn":"2026-02-13 15:19:14","leadSource":"CHOICEINDIA","priority":"LOW","referredId":"CBA0532362","expiryDate":"2026-04-10","tag":"promo"},{"id":"b2eb18d7c52b4544","serviceName":"Jiffy","firstName":"ABHISHEK BANSAL","leadStatusName":"created","createdBy":"bulk-upload-utility","createdOn":"2026-02-13 15:19:09","leadSource":"CHOICEINDIA","priority":"LOW","referredId":"CBA0532362","expiryDate":"2026-04-09","tag":""},{"id":"4cae43d69c64486d","serviceName":"Jiffy","firstName":"Sanjoy","leadStatusName":"created","createdBy":"finx-sso","createdOn":"2026-02-11 19:37:18","leadSource":"CHOICEINDIA","priority":"HIGH","referredId":"C0020013","expiryDate":"2026-03-14","tag":"vip"}]}};
+  textarea.value = JSON.stringify(sample, null, 2);
+  charCount.textContent = textarea.value.length.toLocaleString() + ' characters';
+  parseJSON();
+}
+
+function extractItems(data) {
+  if (Array.isArray(data)) {
+    const objs = data.filter(i => typeof i === 'object' && i !== null && !Array.isArray(i));
+    if (objs.length > 0) return objs;
+    for (const item of data) { const r = extractItems(item); if (r.length) return r; }
+  }
+  if (typeof data === 'object' && data !== null) {
+    for (const v of Object.values(data)) {
+      const r = extractItems(v);
+      if (r.length) return r;
+    }
+  }
+  return [];
+}
+
+function getType(val) {
+  if (val === null || val === undefined) return 'null';
+  if (typeof val === 'boolean') return 'bool';
+  if (typeof val === 'number') return 'num';
+  if (typeof val === 'object') return 'obj';
+  return 'str';
+}
+
+function parseJSON() {
+  hideError();
+  const raw = textarea.value.trim();
+  if (!raw) { showError('Please paste a JSON response first.'); return; }
+  let data;
+  try { data = JSON.parse(raw); } catch(e) { showError('Invalid JSON — ' + e.message); return; }
+  parsedItems = extractItems(data);
+  if (!parsedItems.length) { showError('No array of objects found in this JSON.'); return; }
+  const keys = Object.keys(parsedItems[0]);
+  renderSummary(parsedItems, keys, data);
+  renderKeys(keys);
+  document.getElementById('results-section').style.display = 'none';
+  activeKey = null;
+}
+
+function renderSummary(items, keys, raw) {
+  const cards = document.getElementById('summary-cards');
+  const totalKeys = keys.length;
+  const totalRecords = items.length;
+  const jsonSize = (JSON.stringify(raw).length / 1024).toFixed(1);
+  cards.innerHTML = `
+    <div class="summary-card">
+      <div class="card-val">${totalRecords}</div>
+      <div class="card-label">records found</div>
+    </div>
+    <div class="summary-card">
+      <div class="card-val">${totalKeys}</div>
+      <div class="card-label">keys detected</div>
+    </div>
+    <div class="summary-card">
+      <div class="card-val">${jsonSize}kb</div>
+      <div class="card-label">json size</div>
+    </div>
+  `;
+  cards.style.display = 'grid';
+}
+
+function renderKeys(keys) {
+  const grid = document.getElementById('keys-grid');
+  grid.innerHTML = '';
+  keys.forEach(k => {
+    const types = parsedItems.map(i => getType(i[k]));
+    const dominantType = types.sort((a,b) =>
+      types.filter(t=>t===b).length - types.filter(t=>t===a).length)[0];
+    const chip = document.createElement('button');
+    chip.className = 'key-chip';
+    chip.innerHTML = `${escHtml(k)}<span class="type-badge">${dominantType}</span>`;
+    chip.onclick = () => selectKey(k, chip);
+    grid.appendChild(chip);
+  });
+  const ks = document.getElementById('keys-section');
+  ks.style.display = 'block';
+}
+
+function selectKey(key, chip) {
+  document.querySelectorAll('.key-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  activeKey = key;
+  allValues = parsedItems.map((item, i) => ({ index: i + 1, val: item[key] }));
+  renderResults(key, allValues);
+}
+
+function renderResults(key, values) {
+  document.getElementById('results-key-name').textContent = key;
+  const unique = new Set(values.map(v => String(v.val))).size;
+  const nullCount = values.filter(v => v.val === null || v.val === undefined || v.val === '').length;
+  const meta = document.getElementById('results-meta');
+  meta.innerHTML = `
+    <span class="meta-badge">${values.length} records</span>
+    <span class="meta-badge unique">${unique} unique</span>
+    ${nullCount > 0 ? `<span class="meta-badge nulls">${nullCount} empty</span>` : ''}
+  `;
+  document.getElementById('search-input').value = '';
+  renderValueRows(values);
+  document.getElementById('footer-info').textContent = `showing ${values.length} values for "${key}"`;
+  const rs = document.getElementById('results-section');
+  rs.style.display = 'block';
+  rs.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderValueRows(values) {
+  const list = document.getElementById('values-list');
+  if (!values.length) {
+    list.innerHTML = '<div class="no-results">no matching values</div>';
+    return;
+  }
+  list.innerHTML = values.map(({ index, val }) => {
+    let cls = '';
+    let display = '';
+    if (val === null || val === undefined) { cls = 'is-null'; display = 'null'; }
+    else if (val === '') { cls = 'is-empty'; display = '(empty string)'; }
+    else if (typeof val === 'number') { cls = 'is-number'; display = escHtml(String(val)); }
+    else if (typeof val === 'boolean') { cls = 'is-bool'; display = escHtml(String(val)); }
+    else { display = escHtml(String(val)); }
+    return `<div class="value-row">
+      <div class="row-index">${index}</div>
+      <div class="row-value ${cls}">${display}</div>
+      <button class="copy-btn" onclick="copyVal(this, '${escAttr(String(val))}')">copy</button>
+    </div>`;
+  }).join('');
+}
+
+function filterValues() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = allValues.filter(({ val }) =>
+    String(val).toLowerCase().includes(q)
+  );
+  renderValueRows(filtered);
+  document.getElementById('footer-info').textContent =
+    `showing ${filtered.length} of ${allValues.length} values for "${activeKey}"`;
+}
+
+function copyVal(btn, val) {
+  navigator.clipboard.writeText(val).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function copyAll() {
+  const vals = allValues.map(v => v.val === null ? 'null' : String(v.val));
+  navigator.clipboard.writeText(vals.join('\n')).then(() => {
+    const btn = document.querySelector('.btn-copy-all');
+    btn.textContent = 'copied all!';
+    setTimeout(() => btn.textContent = 'copy all values', 1500);
+  });
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escAttr(s) {
+  return s.replace(/'/g, '\\&#39;').replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>
