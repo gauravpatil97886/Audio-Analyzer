@@ -82,7 +82,6 @@ body {
   height: 100vh;
   transition: background .25s, color .25s;
 }
-
 /* ════════════════════
    TOP BAR
 ════════════════════ */
@@ -645,157 +644,235 @@ body {
 @keyframes tout { to{opacity:0;transform:translateX(12px);} }
 
 /* ════════════════════════════════════════
-   FOOTER — Beautiful Creator + License
+   CREATOR DRAWER — Floating Side Panel
+   Auto-shows 10s on load, then hides.
+   Toggle via FAB button bottom-right.
 ════════════════════════════════════════ */
-#footer {
-  flex-shrink: 0;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  position: relative;
+
+/* ── Floating trigger button ── */
+#creator-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 3000;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(37,99,235,.45), 0 0 0 3px rgba(37,99,235,.12);
+  transition: all .2s var(--ease);
+  font-size: 20px;
+  color: #fff;
   overflow: hidden;
 }
-
-/* Top gradient accent line */
-#footer::before {
+#creator-fab::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, #2563eb 0%, #4f46e5 40%, #7c3aed 70%, #2563eb 100%);
+  inset: 0; border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  opacity: 0;
+  transition: opacity .15s;
+}
+#creator-fab:hover { transform: scale(1.08); box-shadow: 0 6px 22px rgba(37,99,235,.55), 0 0 0 4px rgba(37,99,235,.18); }
+#creator-fab:hover::after { opacity: 1; }
+#creator-fab:active { transform: scale(.95); }
+
+/* Pulse ring on FAB (auto-show hint) */
+#creator-fab.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -6px; border-radius: 50%;
+  border: 2px solid rgba(37,99,235,.5);
+  animation: fab-ring 1.4s ease-out infinite;
+}
+@keyframes fab-ring {
+  0%   { transform: scale(1); opacity: .8; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+/* Countdown arc on FAB */
+.fab-timer {
+  position: absolute;
+  inset: -3px; border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(255,255,255,.7);
+  animation: fab-spin 10s linear forwards;
+  pointer-events: none;
+}
+@keyframes fab-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Drawer panel ── */
+#creator-drawer {
+  position: fixed;
+  bottom: 82px;
+  right: 24px;
+  z-index: 2999;
+  width: 300px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(15,22,41,.18), 0 4px 12px rgba(15,22,41,.1), 0 0 0 1px rgba(37,99,235,.06);
+  overflow: hidden;
+  transform: translateY(16px) scale(.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .3s var(--ease), opacity .3s var(--ease);
+}
+[data-dark] #creator-drawer {
+  box-shadow: 0 16px 48px rgba(0,0,0,.5), 0 4px 12px rgba(0,0,0,.3), 0 0 0 1px rgba(37,99,235,.1);
+}
+#creator-drawer.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Animated top gradient bar */
+.drawer-accent {
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #4f46e5, #7c3aed, #2563eb);
   background-size: 200% 100%;
-  animation: grad-run 4s linear infinite;
+  animation: grad-run 3s linear infinite;
 }
 @keyframes grad-run {
   0%   { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
-/* Footer inner layout: 3 columns */
-.footer-inner {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  padding: 14px 28px;
-  gap: 20px;
-}
-
-/* ── LEFT: Creator card ── */
-.footer-creator {
+/* Creator section */
+.drawer-creator {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 13px;
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--border);
 }
 
 .creator-avatar {
-  width: 38px; height: 38px;
+  width: 52px; height: 52px;
   border-radius: 50%;
   background: linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%);
   display: flex; align-items: center; justify-content: center;
-  font-size: 17px;
+  font-size: 24px;
   flex-shrink: 0;
-  box-shadow: 0 2px 10px rgba(37,99,235,.3);
-  border: 2px solid var(--surface);
-  outline: 2px solid rgba(37,99,235,.2);
+  box-shadow: 0 3px 12px rgba(37,99,235,.35);
+  border: 3px solid var(--surface);
+  outline: 2px solid rgba(37,99,235,.25);
+  text-decoration: none;
   transition: transform .2s, box-shadow .2s;
 }
 .creator-avatar:hover {
   transform: scale(1.06);
-  box-shadow: 0 4px 16px rgba(37,99,235,.45);
+  box-shadow: 0 5px 18px rgba(37,99,235,.5);
 }
 
-.creator-info { display: flex; flex-direction: column; gap: 2px; }
+.creator-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
 
 .creator-label {
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--t3);
   font-family: 'IBM Plex Mono', monospace;
 }
 
 .creator-name {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   color: var(--t1);
-  letter-spacing: -.2px;
+  letter-spacing: -.3px;
+  line-height: 1.2;
 }
 
 .creator-role {
   font-size: 10.5px;
   color: var(--t3);
   font-family: 'IBM Plex Mono', monospace;
+  margin-top: 1px;
 }
 
 .creator-socials {
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-top: 3px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .soc-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 22px; height: 22px;
+  gap: 5px;
+  padding: 5px 10px;
   border: 1px solid var(--border);
-  border-radius: 5px;
-  color: var(--t3);
+  border-radius: 7px;
+  color: var(--t2);
   text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'IBM Plex Mono', monospace;
   transition: all .15s;
+  background: var(--surface2);
 }
 .soc-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-s); transform: translateY(-1px); }
+.soc-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
 
-/* ── CENTER: Brand + date ── */
-.footer-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-}
-
-.footer-brand-row {
+/* Tool info row */
+.drawer-tool {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
 }
 
-.footer-logo {
-  width: 28px; height: 28px;
+.drawer-tool-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.drawer-tool-icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
   background: linear-gradient(135deg, #2563eb, #4f46e5);
-  border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
+  font-size: 15px;
   box-shadow: 0 2px 8px rgba(37,99,235,.3);
 }
 
-.footer-brand-name {
-  font-size: 15px;
+.drawer-tool-name {
+  font-size: 14px;
   font-weight: 800;
-  letter-spacing: -.3px;
   color: var(--t1);
+  letter-spacing: -.2px;
 }
+.drawer-tool-name span { color: var(--blue); }
 
-.footer-brand-name span { color: var(--blue); }
-
-.footer-tagline {
-  font-size: 10.5px;
+.drawer-tool-sub {
+  font-size: 9.5px;
   color: var(--t3);
   font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: .3px;
 }
 
-.footer-meta-row {
+/* Badges row */
+.drawer-badges {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
+  flex-wrap: wrap;
 }
 
 .f-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 20px;
   font-size: 9.5px;
   font-family: 'IBM Plex Mono', monospace;
@@ -806,43 +883,78 @@ body {
 
 .badge-version { background: var(--blue-s); color: var(--blue); border: 1px solid rgba(37,99,235,.2); }
 .badge-date    { background: var(--surface2); color: var(--t2); border: 1px solid var(--border); }
-.badge-license { background: rgba(5,150,105,.08); color: var(--green); border: 1px solid rgba(5,150,105,.2); cursor: pointer; transition: all .15s; }
+.badge-license {
+  background: rgba(5,150,105,.08); color: var(--green);
+  border: 1px solid rgba(5,150,105,.2); cursor: pointer; transition: all .15s;
+}
 .badge-license:hover { background: rgba(5,150,105,.15); }
 
-/* ── RIGHT: License block ── */
-.footer-right {
+/* Copyright strip */
+.drawer-copy {
+  padding: 10px 18px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface2);
 }
 
-.copyright-line {
-  font-size: 11px;
-  color: var(--t2);
-  font-weight: 500;
-  text-align: right;
-}
-
-.copyright-line strong { color: var(--blue); }
-
-.license-text {
-  font-size: 9.5px;
+.drawer-copy-txt {
+  font-size: 10px;
   color: var(--t3);
   font-family: 'IBM Plex Mono', monospace;
-  text-align: right;
   line-height: 1.5;
-  max-width: 240px;
 }
+
+.drawer-copy-txt strong { color: var(--blue); font-weight: 700; }
 
 .license-link {
   color: var(--blue);
   text-decoration: none;
   border-bottom: 1px solid rgba(37,99,235,.3);
-  transition: border-color .15s;
   cursor: pointer;
+  transition: border-color .15s;
+  font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace;
 }
 .license-link:hover { border-color: var(--blue); }
+
+/* Drawer close button (inside drawer header area) */
+.drawer-close {
+  position: absolute;
+  top: 11px; right: 12px;
+  width: 22px; height: 22px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface2);
+  color: var(--t3);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  z-index: 10;
+}
+.drawer-close:hover { background: rgba(220,38,38,.08); border-color: rgba(220,38,38,.3); color: var(--red); }
+
+/* Tooltip on FAB showing hint */
+#creator-fab .fab-tooltip {
+  position: absolute;
+  right: 54px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 11px;
+  font-size: 11px;
+  color: var(--t1);
+  font-family: 'IBM Plex Mono', monospace;
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .2s;
+}
+#creator-fab:hover .fab-tooltip { opacity: 1; }
 
 /* ── LICENSE MODAL ── */
 #license-modal {
@@ -1355,54 +1467,70 @@ lists, links, and more."></textarea>
   </div>
 </div>
 
-<!-- ══ FOOTER ══ -->
-<footer id="footer">
-  <div class="footer-inner">
+<!-- ══ FLOATING CREATOR FAB ══ -->
+<button id="creator-fab" title="About DocForge &amp; Creator" aria-label="Open creator info">
+  <span id="fab-icon">👨‍💻</span>
+  <div class="fab-timer" id="fab-timer"></div>
+  <div class="fab-tooltip">About &amp; License</div>
+</button>
 
-    <!-- LEFT: Creator -->
-    <div class="footer-creator">
-      <a href="https://github.com/gauravpatil97886" target="_blank" rel="noopener noreferrer" class="creator-avatar" title="Visit GitHub — gauravpatil97886" style="text-decoration:none;">👨‍💻</a>
-      <div class="creator-info">
-        <div class="creator-label">Created by</div>
-        <div class="creator-name">Gaurav Patil</div>
-        <div class="creator-role">Software Developer · Doc Tools</div>
-        <div class="creator-socials">
-          <a class="soc-btn" href="https://github.com/gauravpatil97886" title="GitHub — gauravpatil97886" target="_blank" rel="noopener noreferrer">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          </a>
-          <a class="soc-btn" href="https://www.linkedin.com/in/gauravpatil97886" title="LinkedIn — gauravpatil97886" target="_blank" rel="noopener noreferrer">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          </a>
-        </div>
+<!-- ══ CREATOR DRAWER ══ -->
+<div id="creator-drawer" role="dialog" aria-label="Creator info panel">
+
+  <!-- gradient accent top bar -->
+  <div class="drawer-accent"></div>
+
+  <!-- Close button -->
+  <button class="drawer-close" id="drawer-close-btn" title="Close">✕</button>
+
+  <!-- Creator identity -->
+  <div class="drawer-creator">
+    <a href="https://github.com/gauravpatil97886" target="_blank" rel="noopener noreferrer"
+       class="creator-avatar" title="Open GitHub profile">👨‍💻</a>
+    <div class="creator-info">
+      <div class="creator-label">Created by</div>
+      <div class="creator-name">Gaurav Patil</div>
+      <div class="creator-role">Software Developer · Doc Tools</div>
+      <div class="creator-socials">
+        <a class="soc-btn" href="https://github.com/gauravpatil97886"
+           target="_blank" rel="noopener noreferrer" title="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a class="soc-btn" href="https://www.linkedin.com/in/gauravpatil97886"
+           target="_blank" rel="noopener noreferrer" title="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
       </div>
     </div>
-
-    <!-- CENTER: Brand -->
-    <div class="footer-center">
-      <div class="footer-brand-row">
-        <div class="footer-logo">📄</div>
-        <div class="footer-brand-name">Doc<span>Forge</span></div>
-      </div>
-      <div class="footer-tagline">MD → PDF · DOC · TXT Converter</div>
-      <div class="footer-meta-row">
-        <span class="f-badge badge-version">v1.0</span>
-        <span class="f-badge badge-date" id="footer-date">—</span>
-        <span class="f-badge badge-license" id="open-license-btn">⚖️ MIT License</span>
-      </div>
-    </div>
-
-    <!-- RIGHT: Copyright -->
-    <div class="footer-right">
-      <div class="copyright-line">© <span id="copy-year">2026</span> <strong>Gaurav Patil</strong>. All rights reserved.</div>
-      <div class="license-text">
-        Released under the <span class="license-link" id="open-license-btn-2">MIT License</span>.<br/>
-        Free to use, modify &amp; distribute with attribution.<br/>
-        Built for developers who work with API &amp; technical docs.
-      </div>
-    </div>
-
   </div>
-</footer>
+
+  <!-- Tool brand row -->
+  <div class="drawer-tool">
+    <div class="drawer-tool-brand">
+      <div class="drawer-tool-icon">📄</div>
+      <div>
+        <div class="drawer-tool-name">Doc<span>Forge</span></div>
+        <div class="drawer-tool-sub">MD → PDF · DOC · TXT</div>
+      </div>
+    </div>
+    <div class="drawer-badges">
+      <span class="f-badge badge-version">v1.0</span>
+      <span class="f-badge badge-date" id="footer-date">—</span>
+    </div>
+  </div>
+
+  <!-- License badge + copyright -->
+  <div class="drawer-copy">
+    <div class="drawer-copy-txt">
+      © <span id="copy-year">2026</span> <strong>Gaurav Patil</strong>. MIT License.<br/>
+      Free to use, modify &amp; distribute with attribution.
+    </div>
+    <span class="f-badge badge-license" id="open-license-btn">⚖️ License</span>
+  </div>
+
+</div>
 
 <style id="css-inject"></style>
 
@@ -2093,41 +2221,107 @@ function toast(msg, type = 'info', ms = 3000) {
 restore();
 applyPreviewStyle();
 
-// ── Dynamic dates in footer ──
+// ── Dynamic dates ──
 (function() {
   const now = new Date();
   const yr = now.getFullYear();
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dateStr = `${months[now.getMonth()]} ${now.getDate()}, ${yr}`;
-
-  // Set all year references
   ['copy-year','modal-year','modal-year-2'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = yr;
+    const el = document.getElementById(id); if (el) el.textContent = yr;
   });
-
-  // Set footer date badge
-  const dateBadge = document.getElementById('footer-date');
-  if (dateBadge) dateBadge.textContent = `📅 ${dateStr}`;
+  const db = document.getElementById('footer-date');
+  if (db) db.textContent = `📅 ${dateStr}`;
 })();
+
+// ── Creator Drawer & FAB ──
+const drawer    = document.getElementById('creator-drawer');
+const fab       = document.getElementById('creator-fab');
+const fabTimer  = document.getElementById('fab-timer');
+let drawerOpen  = false;
+let autoTimer   = null;
+
+function openDrawer() {
+  drawerOpen = true;
+  drawer.classList.add('open');
+  fab.classList.remove('pulse-ring');
+  // Swap FAB icon to close indicator
+  document.getElementById('fab-icon').textContent = '✕';
+  fab.style.background = 'linear-gradient(135deg,#4b5563,#374151)';
+}
+
+function closeDrawer() {
+  drawerOpen = false;
+  drawer.classList.remove('open');
+  document.getElementById('fab-icon').textContent = '👨‍💻';
+  fab.style.background = '';
+}
+
+function toggleDrawer() {
+  if (drawerOpen) closeDrawer(); else openDrawer();
+}
+
+// Auto-show on load: show after 800ms, auto-close after 10s
+setTimeout(() => {
+  fab.classList.add('pulse-ring');        // pulsing hint ring
+  openDrawer();                            // show drawer
+  autoTimer = setTimeout(() => {
+    closeDrawer();
+    fab.classList.remove('pulse-ring');
+    // Gentle bounce to hint the FAB is still there
+    fab.style.animation = 'fab-bounce .5s ease both';
+    setTimeout(() => fab.style.animation = '', 600);
+  }, 10000);
+}, 800);
+
+// FAB toggle
+fab.addEventListener('click', () => {
+  clearTimeout(autoTimer);               // cancel auto-close if user interacts
+  toggleDrawer();
+});
+
+// Close button inside drawer
+document.getElementById('drawer-close-btn').addEventListener('click', () => {
+  clearTimeout(autoTimer);
+  closeDrawer();
+});
+
+// Close drawer if clicked outside
+document.addEventListener('mousedown', e => {
+  if (drawerOpen && !drawer.contains(e.target) && e.target !== fab && !fab.contains(e.target)) {
+    clearTimeout(autoTimer);
+    closeDrawer();
+  }
+});
+
+// Close on Escape (also closes license modal first if open)
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('license-modal').classList.contains('open')) {
+      closeModal();
+    } else if (drawerOpen) {
+      clearTimeout(autoTimer); closeDrawer();
+    }
+  }
+});
+
+// FAB bounce keyframe
+const fabStyle = document.createElement('style');
+fabStyle.textContent = `@keyframes fab-bounce { 0%{transform:scale(1)} 40%{transform:scale(1.18)} 70%{transform:scale(.92)} 100%{transform:scale(1)} }`;
+document.head.appendChild(fabStyle);
 
 // ── License modal ──
 function openModal()  { document.getElementById('license-modal').classList.add('open'); }
 function closeModal() { document.getElementById('license-modal').classList.remove('open'); }
 
 document.getElementById('open-license-btn').onclick   = openModal;
-document.getElementById('open-license-btn-2').onclick = openModal;
+// open-license-btn-2 is now only in the modal footer, keep for backward compat
+const olb2 = document.getElementById('open-license-btn-2');
+if (olb2) olb2.onclick = openModal;
 document.getElementById('modal-close-btn').onclick    = closeModal;
 document.getElementById('modal-ok-btn').onclick       = closeModal;
-
-// Close on backdrop click
 document.getElementById('license-modal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
-});
-
-// Close on Escape
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
 });
 </script>
 </body>
