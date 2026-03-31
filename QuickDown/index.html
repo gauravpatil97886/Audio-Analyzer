@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DocForge — Technical Doc Converter</title>
+<meta name="description" content="Convert Markdown API docs & technical requirements into beautiful PDF, DOC, and TXT files."/>
+
+<!-- ✅ Browser favicon (SVG inline as data URI) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text y='.9em' font-size='72' x='50%' text-anchor='middle' font-family='system-ui'>📄</text></svg>"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text y='.9em' font-size='72' x='50%' text-anchor='middle' font-family='system-ui'>📄</text></svg>"/>
+
+<!-- CDN Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-theme"/>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<style>
+/* ══════════════════════════════════════
+   DOCFORGE — Technical Doc Converter
+   Theme: Clean Professional Light/Dark
+   Purpose: MD → PDF / DOC / TXT
+══════════════════════════════════════ */
+
+:root {
+  --bg:         #f8f9fc;
+  --surface:    #ffffff;
+  --surface2:   #f1f3f8;
+  --border:     #e2e6f0;
+  --border2:    #cdd2e0;
+  --t1:         #0f1629;
+  --t2:         #4a5271;
+  --t3:         #8892aa;
+  --blue:       #2563eb;
+  --blue-h:     #1d4fd8;
+  --blue-s:     rgba(37,99,235,.08);
+  --blue-b:     rgba(37,99,235,.18);
+  --green:      #059669;
+  --green-s:    rgba(5,150,105,.08);
+  --orange:     #d97706;
+  --orange-s:   rgba(217,119,6,.08);
+  --purple:     #7c3aed;
+  --purple-s:   rgba(124,58,237,.08);
+  --red:        #dc2626;
+  --red-s:      rgba(220,38,38,.08);
+  --radius:     8px;
+  --radius2:    12px;
+  --shadow-sm:  0 1px 3px rgba(15,22,41,.06), 0 1px 2px rgba(15,22,41,.04);
+  --shadow-md:  0 4px 12px rgba(15,22,41,.08), 0 2px 4px rgba(15,22,41,.05);
+  --shadow-lg:  0 8px 32px rgba(15,22,41,.1), 0 4px 8px rgba(15,22,41,.06);
+  --ease:       cubic-bezier(.4,0,.2,1);
+}
+
+[data-dark] {
+  --bg:       #0d1117;
+  --surface:  #161b27;
+  --surface2: #1c2333;
+  --border:   #252d3d;
+  --border2:  #2d3748;
+  --t1:       #e6eaf5;
+  --t2:       #8892aa;
+  --t3:       #4a5271;
+  --blue-s:   rgba(37,99,235,.12);
+  --blue-b:   rgba(37,99,235,.25);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:0 4px 12px rgba(0,0,0,.35);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.45);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; overflow:hidden; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  transition: background .25s, color .25s;
+}
+
+/* ════════════════════
+   TOP BAR
+════════════════════ */
+#topbar {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  gap: 10px;
+  flex-shrink: 0;
+  z-index: 100;
+  position: relative;
+}
+
+/* Logo / Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.brand-logo {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(37,99,235,.35);
+  flex-shrink: 0;
+}
+
+.brand-info { display: flex; flex-direction: column; line-height: 1; }
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: -.3px;
+}
+
+.brand-name span {
+  color: var(--blue);
+}
+
+.brand-desc {
+  font-size: 10px;
+  color: var(--t3);
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: .3px;
+  margin-top: 1px;
+}
+
+.bar-sep { width: 1px; height: 24px; background: var(--border); margin: 0 2px; flex-shrink: 0; }
+
+/* Toolbar buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--t2);
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s var(--ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.btn:hover {
+  background: var(--surface2);
+  border-color: var(--border2);
+  color: var(--t1);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn:active { transform: scale(.97); }
+
+.btn.icon-only { padding: 0 9px; }
+
+/* Export buttons — colored */
+.btn-pdf {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  border-color: transparent;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(220,38,38,.3);
+}
+.btn-pdf:hover { box-shadow: 0 4px 14px rgba(220,38,38,.45); transform: translateY(-1px); background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+.btn-doc {
+  background: linear-gradient(135deg, #2563eb, #1d4fd8);
+  border-color: transparent;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(37,99,235,.3);
+}
+.btn-doc:hover { box-shadow: 0 4px 14px rgba(37,99,235,.45); transform: translateY(-1px); }
+
+.btn-txt {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: transparent;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(5,150,105,.3);
+}
+.btn-txt:hover { box-shadow: 0 4px 14px rgba(5,150,105,.45); transform: translateY(-1px); }
+
+/* Export group label */
+.export-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--t3);
+  flex-shrink: 0;
+}
+
+.bar-space { flex: 1; }
+
+/* Stats pill */
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--t3);
+  flex-shrink: 0;
+}
+.stat strong { color: var(--t2); font-weight: 600; }
+.stat-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border2); }
+
+/* ════════════════════
+   FORMAT BAR
+════════════════════ */
+#fmtbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  min-height: 40px;
+}
+
+.fb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px; height: 28px;
+  padding: 0 7px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--t3);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .12s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.fb:hover { background: var(--blue-s); color: var(--blue); }
+.fb:active { transform: scale(.88); }
+.fb-sep { width: 1px; height: 16px; background: var(--border); margin: 0 3px; flex-shrink: 0; }
+.fb-label { font-family: 'Inter', sans-serif; font-weight: 600; }
+
+/* ════════════════════
+   MAIN LAYOUT
+════════════════════ */
+#main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Editor Pane ── */
+#ed-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 280px;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+
+.pane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.pane-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--t3);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.pane-title svg { width: 12px; height: 12px; }
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--green);
+  letter-spacing: .5px;
+}
+
+.live-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+#editor {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+  padding: 22px 22px;
+  background: var(--surface);
+  color: var(--t1);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.75;
+  overflow-y: auto;
+  caret-color: var(--blue);
+  tab-size: 2;
+  transition: background .25s, color .25s;
+}
+#editor::placeholder { color: var(--t3); font-style: italic; font-size: 13px; }
+#editor::selection { background: rgba(37,99,235,.15); }
+#editor::-webkit-scrollbar { width: 5px; }
+#editor::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── Resizer ── */
+#rsz {
+  width: 4px;
+  background: var(--border);
+  cursor: col-resize;
+  flex-shrink: 0;
+  transition: background .15s;
+}
+#rsz:hover { background: var(--blue); }
+
+/* ── Preview Pane ── */
+#pv-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 280px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+#pv-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px;
+}
+#pv-scroll::-webkit-scrollbar { width: 5px; }
+#pv-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* Preview document */
+#preview {
+  max-width: 740px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 44px 48px;
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: var(--t1);
+  box-shadow: var(--shadow-md);
+  min-height: 280px;
+  position: relative;
+  overflow: hidden;
+  transition: background .25s, color .25s, border-color .25s;
+}
+
+/* Blue top border accent */
+#preview::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #2563eb, #4f46e5, #7c3aed);
+}
+
+/* ════════════════════
+   PREVIEW TYPOGRAPHY
+   — Designed for technical/API docs
+════════════════════ */
+#preview h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.95em;
+  font-weight: 700;
+  letter-spacing: -.5px;
+  color: var(--t1);
+  margin: .5em 0 .6em;
+  padding-bottom: .4em;
+  border-bottom: 2px solid var(--border);
+  line-height: 1.2;
+}
+
+#preview h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--blue);
+  margin: 1.6em 0 .5em;
+  padding-bottom: .3em;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#preview h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.12em;
+  font-weight: 600;
+  color: var(--t1);
+  margin: 1.3em 0 .4em;
+}
+
+#preview h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: .95em;
+  font-weight: 600;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin: 1em 0 .3em;
+}
+
+#preview p { margin: 0 0 1em; }
+
+#preview a {
+  color: var(--blue);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(37,99,235,.3);
+  transition: border-color .15s;
+}
+#preview a:hover { border-color: var(--blue); }
+
+#preview strong { font-weight: 700; color: var(--t1); }
+#preview em { font-style: italic; }
+
+#preview ul, #preview ol { margin: 0 0 1em 1.4em; }
+#preview li { margin: .3em 0; }
+#preview ul > li::marker { color: var(--blue); }
+#preview ol > li::marker { color: var(--blue); font-family: 'IBM Plex Mono', monospace; font-size: .85em; }
+
+/* Blockquote — for notes/warnings */
+#preview blockquote {
+  margin: 1.2em 0;
+  padding: 12px 18px;
+  background: rgba(37,99,235,.05);
+  border-left: 4px solid var(--blue);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--t2);
+  font-style: italic;
+  font-size: .95em;
+}
+
+/* Inline code */
+#preview code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .85em;
+  background: rgba(37,99,235,.07);
+  color: #1d4fd8;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(37,99,235,.15);
+}
+[data-dark] #preview code {
+  background: rgba(37,99,235,.12);
+  color: #93bbfc;
+  border-color: rgba(37,99,235,.25);
+}
+
+/* Code block */
+#preview pre {
+  border-radius: var(--radius);
+  margin: 1.2em 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+#preview pre code {
+  background: transparent; border: none; padding: 0;
+  font-size: .88em; color: inherit;
+}
+
+/* Table — critical for API docs */
+#preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-family: 'Inter', sans-serif;
+  font-size: .9em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+#preview thead {
+  background: linear-gradient(135deg, rgba(37,99,235,.07), rgba(79,70,229,.05));
+}
+
+#preview th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--blue);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+#preview td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--t1);
+  vertical-align: top;
+}
+
+#preview tr:last-child td { border-bottom: none; }
+#preview tbody tr:hover { background: var(--blue-s); }
+
+#preview img { max-width: 100%; border-radius: var(--radius); margin: .8em 0; display: block; }
+#preview hr { border: none; height: 1px; background: var(--border); margin: 1.8em 0; }
+#preview input[type=checkbox] { margin-right: 6px; accent-color: var(--blue); }
+
+/* Empty state */
+.pv-empty {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 320px; gap: 14px; color: var(--t3);
+  text-align: center;
+}
+.pv-empty-ico { font-size: 48px; opacity: .5; }
+.pv-empty-title { font-size: 15px; font-weight: 600; color: var(--t2); font-family: 'Inter', sans-serif; }
+.pv-empty-sub { font-size: 12px; font-family: 'IBM Plex Mono', monospace; opacity: .7; max-width: 280px; line-height: 1.6; }
+
+/* ════════════════════
+   SETTINGS PANEL
+════════════════════ */
+#panel {
+  width: 0; overflow: hidden;
+  transition: width .3s var(--ease);
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#panel.open { width: 260px; }
+.p-inner {
+  width: 260px; height: 100%;
+  overflow-y: auto; padding: 14px 12px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.p-inner::-webkit-scrollbar { width: 3px; }
+.p-inner::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.p-sec { display: flex; flex-direction: column; gap: 9px; }
+.p-sec-title {
+  font-size: 9.5px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--t3); font-weight: 700; font-family: 'IBM Plex Mono', monospace;
+  padding-bottom: 7px; border-bottom: 1px solid var(--border);
+}
+.p-row { display: flex; flex-direction: column; gap: 5px; }
+.p-lbl { font-size: 11.5px; color: var(--t2); font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+.p-lbl em { font-style: normal; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--blue); font-weight: 600; }
+.p-inp {
+  width: 100%; padding: 6px 9px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 6px; color: var(--t1); font-size: 12px;
+  font-family: 'Inter', sans-serif; outline: none;
+  transition: border-color .15s; -webkit-appearance: none;
+}
+.p-inp:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
+.p-range { -webkit-appearance: none; width: 100%; height: 3px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+.p-range::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--blue); cursor: pointer; box-shadow: 0 0 4px rgba(37,99,235,.4); }
+.p-color { width: 38px; height: 26px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; padding: 2px; background: none; }
+.p-inline { display: flex; align-items: center; justify-content: space-between; }
+.tog-row { display: flex; align-items: center; justify-content: space-between; }
+.tog-lbl { font-size: 11.5px; color: var(--t2); }
+.tog { position: relative; width: 32px; height: 17px; flex-shrink: 0; }
+.tog input { opacity: 0; width: 0; height: 0; }
+.tog-t { position: absolute; inset: 0; background: var(--border2); border-radius: 9px; cursor: pointer; transition: background .15s; }
+.tog input:checked + .tog-t { background: var(--blue); }
+.tog-t::after { content: ''; position: absolute; width: 11px; height: 11px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .15s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.tog input:checked + .tog-t::after { transform: translateX(15px); }
+.w-chips { display: flex; gap: 4px; }
+.w-chip { flex: 1; text-align: center; padding: 5px 2px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: var(--t3); cursor: pointer; transition: all .12s; user-select: none; }
+.w-chip:hover { border-color: var(--blue); color: var(--blue); }
+.w-chip.on { background: var(--blue-s); border-color: var(--blue); color: var(--blue); font-weight: 700; }
+
+/* ════════════════════
+   DROP OVERLAY
+════════════════════ */
+#dropzone { position: fixed; inset: 0; z-index: 999; display: none; align-items: center; justify-content: center; background: rgba(248,249,252,.94); }
+[data-dark] #dropzone { background: rgba(13,17,23,.94); }
+#dropzone.on { display: flex; }
+.drop-card { text-align: center; padding: 52px 60px; background: var(--surface); border: 2px dashed var(--blue); border-radius: 16px; box-shadow: var(--shadow-lg); }
+.drop-card .drop-ico { font-size: 48px; }
+.drop-card h2 { font-size: 20px; font-weight: 700; color: var(--t1); margin: 12px 0 6px; }
+.drop-card p { font-size: 12px; color: var(--t3); font-family: 'IBM Plex Mono', monospace; }
+
+/* ════════════════════
+   TOASTS
+════════════════════ */
+#toasts { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.toast { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow-lg); font-size: 12.5px; font-weight: 500; color: var(--t1); max-width: 300px; animation: tin .25s ease both; }
+.toast .toast-ico { font-size: 16px; flex-shrink: 0; }
+.toast.ok { border-left: 3px solid var(--green); }
+.toast.err { border-left: 3px solid var(--red); }
+.toast.info { border-left: 3px solid var(--blue); }
+.toast.out { animation: tout .2s ease forwards; }
+@keyframes tin { from{opacity:0;transform:translateX(12px);} to{opacity:1;transform:none;} }
+@keyframes tout { to{opacity:0;transform:translateX(12px);} }
+
+/* ════════════════════
+   FOOTER
+════════════════════ */
+#footer {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+#footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #2563eb, #4f46e5, #7c3aed); }
+.f-txt { font-size: 11.5px; color: var(--t3); }
+.f-name { font-size: 12px; font-weight: 700; color: var(--blue); }
+.f-sep { color: var(--border2); }
+.f-version { font-size: 10px; color: var(--t3); font-family: 'IBM Plex Mono', monospace; padding: 2px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; }
+.f-link { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border: 1px solid var(--border); border-radius: 6px; color: var(--t3); text-decoration: none; font-size: 12px; transition: all .15s; }
+.f-link:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-s); }
+</style>
+</head>
+<body>
+
+<div id="dropzone">
+  <div class="drop-card">
+    <div class="drop-ico">📄</div>
+    <h2>Drop your Markdown file</h2>
+    <p>Release to load .md content into the editor</p>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<!-- ══ TOP BAR ══ -->
+<header id="topbar">
+
+  <!-- Brand -->
+  <a class="brand" href="#" onclick="return false">
+    <div class="brand-logo">📄</div>
+    <div class="brand-info">
+      <div class="brand-name">Doc<span>Forge</span></div>
+      <div class="brand-desc">MD → PDF · DOC · TXT</div>
+    </div>
+  </a>
+
+  <div class="bar-sep"></div>
+
+  <!-- File ops -->
+  <label class="btn icon-only" title="Open .md file" style="cursor:pointer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+    Open
+    <input type="file" id="file-input" accept=".md,.txt,.markdown" style="display:none">
+  </label>
+
+  <button class="btn icon-only" id="btn-copy" title="Copy markdown">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    Copy
+  </button>
+
+  <button class="btn icon-only" id="btn-dlmd" title="Save as .md">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Save .md
+  </button>
+
+  <button class="btn icon-only" id="btn-clear" title="Clear editor" style="color:var(--red)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+    Clear
+  </button>
+
+  <div class="bar-sep"></div>
+
+  <!-- Export — the main purpose -->
+  <span class="export-label">Export as →</span>
+
+  <button class="btn btn-pdf" id="btn-pdf" title="Export as PDF">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;stroke:#fff"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+    PDF
+  </button>
+
+  <button class="btn btn-doc" id="btn-doc" title="Export as DOC (Word)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;stroke:#fff"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    DOC
+  </button>
+
+  <button class="btn btn-txt" id="btn-txt" title="Export as plain TXT">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;stroke:#fff"><polyline points="4,7 4,4 20,4 20,7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+    TXT
+  </button>
+
+  <div class="bar-sep"></div>
+
+  <button class="btn icon-only" id="btn-theme" title="Toggle theme">
+    <svg id="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg id="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+
+  <button class="btn icon-only" id="btn-settings" title="Customize preview">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M4.93 4.93l1.41 1.41M21 12h-2M5 12H3M12 21v-2M12 5V3"/></svg>
+  </button>
+
+  <div class="bar-space"></div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">📝 <strong id="sw">0</strong> words</div>
+    <div class="stat-dot"></div>
+    <div class="stat">📖 <strong id="st">0</strong> min read</div>
+  </div>
+
+</header>
+
+<!-- ══ FORMAT BAR ══ -->
+<div id="fmtbar">
+  <!-- Headings -->
+  <button class="fb fb-label" data-f="h1" title="Heading 1" style="color:var(--blue);font-size:13px;font-family:'Inter',sans-serif">H1</button>
+  <button class="fb fb-label" data-f="h2" title="Heading 2" style="color:var(--t2);font-size:11px;font-family:'Inter',sans-serif">H2</button>
+  <button class="fb fb-label" data-f="h3" title="Heading 3" style="color:var(--t3);font-size:10px;font-family:'Inter',sans-serif">H3</button>
+  <div class="fb-sep"></div>
+  <!-- Text format -->
+  <button class="fb" data-f="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+  <button class="fb" data-f="italic" title="Italic (Ctrl+I)"><i style="font-family:'IBM Plex Serif',serif">I</i></button>
+  <button class="fb" data-f="strike" title="Strikethrough" style="text-decoration:line-through">S</button>
+  <button class="fb" data-f="code" title="Inline code" style="color:var(--blue)">&#96;c&#96;</button>
+  <div class="fb-sep"></div>
+  <!-- Lists -->
+  <button class="fb" data-f="ul" title="Bullet list">• ≡</button>
+  <button class="fb" data-f="ol" title="Numbered list" style="font-family:'Inter',sans-serif;font-size:11px">1.</button>
+  <button class="fb" data-f="check" title="Task / checklist">☑</button>
+  <button class="fb" data-f="quote" title="Blockquote / note">❝</button>
+  <div class="fb-sep"></div>
+  <!-- Blocks -->
+  <button class="fb" data-f="codeblock" title="Code block" style="color:var(--blue);font-size:10px">```</button>
+  <button class="fb" data-f="table" title="Insert table" style="font-family:'Inter',sans-serif;font-size:11px">⊞ Table</button>
+  <button class="fb" data-f="hr" title="Horizontal rule" style="font-family:'Inter',sans-serif">─</button>
+  <div class="fb-sep"></div>
+  <!-- Insert -->
+  <button class="fb" data-f="link" title="Insert link">🔗</button>
+  <button class="fb" data-f="img" title="Insert image">🖼️</button>
+  <!-- API doc helpers -->
+  <div class="fb-sep"></div>
+  <button class="fb" data-f="api-get" title="Insert API GET endpoint" style="color:var(--green);font-size:10px;font-family:'IBM Plex Mono',monospace">GET</button>
+  <button class="fb" data-f="api-post" title="Insert API POST endpoint" style="color:var(--orange);font-size:10px;font-family:'IBM Plex Mono',monospace">POST</button>
+  <button class="fb" data-f="req-table" title="Insert request params table" style="font-family:'Inter',sans-serif;font-size:10px">Params</button>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+  <!-- Editor -->
+  <div id="ed-pane">
+    <div class="pane-head">
+      <div class="pane-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Markdown Editor
+      </div>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        LIVE
+      </div>
+    </div>
+    <textarea id="editor" spellcheck="false" placeholder="# API Documentation
+
+Paste or type your markdown here.
+Drag & drop a .md file to load instantly.
+
+Supports: headings, tables, code blocks,
+lists, links, and more."></textarea>
+  </div>
+
+  <div id="rsz"></div>
+
+  <!-- Preview -->
+  <div id="pv-pane">
+    <div class="pane-head">
+      <div class="pane-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Document Preview
+      </div>
+      <div style="font-size:11px;color:var(--t3);font-family:'IBM Plex Mono',monospace">Export-ready</div>
+    </div>
+    <div id="pv-scroll">
+      <div id="preview">
+        <div class="pv-empty">
+          <div class="pv-empty-ico">📋</div>
+          <div class="pv-empty-title">No document loaded</div>
+          <div class="pv-empty-sub">Paste your API docs or technical markdown on the left, or drag & drop a .md file here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div id="panel">
+    <div class="p-inner">
+
+      <div class="p-sec">
+        <div class="p-sec-title">Preview Font</div>
+        <div class="p-row">
+          <div class="p-lbl">Family</div>
+          <select class="p-inp" id="pf-font">
+            <option value="'IBM Plex Serif',Georgia,serif">IBM Plex Serif</option>
+            <option value="'Inter',sans-serif">Inter (Sans)</option>
+            <option value="'IBM Plex Mono',monospace">IBM Plex Mono</option>
+            <option value="Georgia,serif">Georgia</option>
+            <option value="'Trebuchet MS',sans-serif">Trebuchet</option>
+          </select>
+        </div>
+        <div class="p-row">
+          <div class="p-lbl">Size <em id="v-sz">15.5px</em></div>
+          <input type="range" class="p-range" id="pf-sz" min="12" max="20" value="15.5" step=".5">
+        </div>
+        <div class="p-row">
+          <div class="p-lbl">Line Height <em id="v-lh">1.85</em></div>
+          <input type="range" class="p-range" id="pf-lh" min="1.3" max="2.4" value="1.85" step=".05">
+        </div>
+      </div>
+
+      <div class="p-sec">
+        <div class="p-sec-title">Colors</div>
+        <div class="p-row"><div class="p-inline"><span class="p-lbl">Text</span><input type="color" class="p-color" id="pf-tc" value="#0f1629"></div></div>
+        <div class="p-row"><div class="p-inline"><span class="p-lbl">Background</span><input type="color" class="p-color" id="pf-bg" value="#ffffff"></div></div>
+      </div>
+
+      <div class="p-sec">
+        <div class="p-sec-title">Layout</div>
+        <div class="p-row">
+          <div class="p-lbl">Width</div>
+          <div class="w-chips" id="wchips">
+            <div class="w-chip" data-w="560px">SM</div>
+            <div class="w-chip on" data-w="740px">MD</div>
+            <div class="w-chip" data-w="920px">LG</div>
+            <div class="w-chip" data-w="100%">Full</div>
+          </div>
+        </div>
+        <div class="p-row">
+          <div class="p-lbl">Padding <em id="v-pd">44px</em></div>
+          <input type="range" class="p-range" id="pf-pd" min="16" max="80" value="44" step="4">
+        </div>
+      </div>
+
+      <div class="p-sec">
+        <div class="p-sec-title">Options</div>
+        <div class="tog-row"><span class="tog-lbl">Syntax Highlighting</span><label class="tog"><input type="checkbox" id="t-hl" checked><div class="tog-t"></div></label></div>
+        <div class="tog-row"><span class="tog-lbl">Scroll Sync</span><label class="tog"><input type="checkbox" id="t-ss" checked><div class="tog-t"></div></label></div>
+      </div>
+
+      <!-- PDF settings -->
+      <div class="p-sec">
+        <div class="p-sec-title">PDF Export Settings</div>
+        <div class="p-row">
+          <div class="p-lbl">Paper Size</div>
+          <select class="p-inp" id="pdf-size"><option value="a4">A4</option><option value="letter">Letter</option><option value="a3">A3</option></select>
+        </div>
+        <div class="p-row">
+          <div class="p-lbl">Orientation</div>
+          <select class="p-inp" id="pdf-orient"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select>
+        </div>
+      </div>
+
+      <div class="p-sec">
+        <div class="p-sec-title">Custom CSS</div>
+        <textarea class="p-inp" id="pf-css" rows="5" style="font-family:'IBM Plex Mono',monospace;font-size:11px;resize:vertical;color:var(--blue)" placeholder="#preview h1 { color: red; }"></textarea>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer id="footer">
+  <span class="f-txt">Convert markdown technical docs to</span>
+  <strong style="font-size:12px;color:var(--t2)">PDF · DOC · TXT</strong>
+  <span class="f-sep">·</span>
+  <span class="f-txt">by</span>
+  <span class="f-name">Gaurav Patil</span>
+  <span class="f-sep">·</span>
+  <span class="f-version">DocForge v1.0</span>
+  <span class="f-sep">·</span>
+  <a class="f-link" href="#" title="GitHub" onclick="return false">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+  </a>
+  <a class="f-link" href="#" title="LinkedIn" onclick="return false">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+  </a>
+</footer>
+
+<style id="css-inject"></style>
+
+<script>
+/* ══════════════════════════════════════════
+   DocForge — Technical Document Converter
+   Purpose: Markdown → PDF / DOC / TXT
+   Author: Gaurav Patil
+══════════════════════════════════════════ */
+
+const editor   = document.getElementById('editor');
+const preview  = document.getElementById('preview');
+const pvScroll = document.getElementById('pv-scroll');
+const panel    = document.getElementById('panel');
+const dropZone = document.getElementById('dropzone');
+const toastsEl = document.getElementById('toasts');
+
+// ── Marked config ──
+marked.setOptions({ gfm: true, breaks: true });
+
+// ── State ──
+let syncOn = true, edLock = false, pvLock = false;
+let renderTimer = null;
+const LS = 'docforge_v1';
+
+// ── Filename helper ──
+function getFilename(ext) {
+  const now = new Date();
+  const d = now.getFullYear() + '-' +
+    String(now.getMonth()+1).padStart(2,'0') + '-' +
+    String(now.getDate()).padStart(2,'0');
+  const t = String(now.getHours()).padStart(2,'0') + '-' +
+    String(now.getMinutes()).padStart(2,'0') + '-' +
+    String(now.getSeconds()).padStart(2,'0');
+  return `document_${d}_${t}.${ext}`;
+}
+
+// ── Render markdown → preview ──
+function render() {
+  clearTimeout(renderTimer);
+  renderTimer = setTimeout(() => {
+    const md = editor.value;
+    if (!md.trim()) {
+      preview.innerHTML = `<div class="pv-empty">
+        <div class="pv-empty-ico">📋</div>
+        <div class="pv-empty-title">No document loaded</div>
+        <div class="pv-empty-sub">Paste your API docs or technical markdown on the left, or drag & drop a .md file</div>
+      </div>`;
+      updateStats('');
+      return;
+    }
+    preview.innerHTML = marked.parse(md);
+    if (document.getElementById('t-hl').checked) {
+      preview.querySelectorAll('pre code').forEach(el => {
+        if (!el.dataset.hl) { hljs.highlightElement(el); el.dataset.hl = '1'; }
+      });
+    }
+    updateStats(md);
+    applyPreviewStyle();
+  }, 100);
+}
+
+function updateStats(t) {
+  const w = t.trim() ? t.trim().split(/\s+/).length : 0;
+  document.getElementById('sw').textContent = w.toLocaleString();
+  document.getElementById('st').textContent = Math.max(1, Math.ceil(w / 200));
+}
+
+// ── Save / Restore ──
+function save() { try { localStorage.setItem(LS, editor.value); } catch {} }
+
+function restore() {
+  try {
+    const s = localStorage.getItem(LS);
+    if (s) { editor.value = s; render(); return; }
+  } catch {}
+  editor.value = defaultDoc();
+  render();
+}
+
+function defaultDoc() {
+  return `# Payment Gateway API Documentation
+
+> **Version:** 2.4.1 | **Base URL:** \`https://api.example.com/v2\`
+
+## Overview
+
+This document describes the REST API endpoints for the Payment Gateway service.
+All requests must be authenticated using a Bearer token in the Authorization header.
+
+---
+
+## Authentication
+
+\`\`\`http
+Authorization: Bearer <your_api_token>
+Content-Type: application/json
+\`\`\`
+
+---
+
+## Endpoints
+
+### Create Payment
+
+**POST** \`/payments\`
+
+Creates a new payment transaction.
+
+#### Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| amount | number | ✅ Yes | Amount in smallest currency unit (paise/cents) |
+| currency | string | ✅ Yes | ISO 4217 currency code (e.g. INR, USD) |
+| customer_id | string | ✅ Yes | Unique customer identifier |
+| description | string | No | Payment description (max 255 chars) |
+| metadata | object | No | Custom key-value pairs |
+
+#### Request Body
+
+\`\`\`json
+{
+  "amount": 50000,
+  "currency": "INR",
+  "customer_id": "cust_ABC123",
+  "description": "Order #1042 payment",
+  "metadata": {
+    "order_id": "ord_1042",
+    "product": "Premium Plan"
+  }
+}
+\`\`\`
+
+#### Response — 201 Created
+
+\`\`\`json
+{
+  "id": "pay_XYZ789",
+  "status": "created",
+  "amount": 50000,
+  "currency": "INR",
+  "created_at": "2026-03-31T10:22:00Z"
+}
+\`\`\`
+
+---
+
+### Get Payment
+
+**GET** \`/payments/{payment_id}\`
+
+Retrieves details of a specific payment.
+
+---
+
+## Status Codes
+
+| Code | Status | Description |
+|------|--------|-------------|
+| 200 | OK | Successful request |
+| 201 | Created | Resource created |
+| 400 | Bad Request | Invalid parameters |
+| 401 | Unauthorized | Missing or invalid token |
+| 404 | Not Found | Resource not found |
+| 500 | Server Error | Internal server error |
+
+---
+
+## Requirements
+
+- [ ] Implement payment creation endpoint
+- [ ] Add webhook support for payment status updates
+- [x] Design error response schema
+- [x] Document all status codes
+`;
+}
+
+// ── Editor events ──
+editor.addEventListener('input', () => { render(); save(); });
+
+// ── Scroll sync ──
+editor.addEventListener('scroll', () => {
+  if (!syncOn || pvLock) return;
+  edLock = true;
+  const r = editor.scrollTop / (editor.scrollHeight - editor.clientHeight || 1);
+  pvScroll.scrollTop = r * (pvScroll.scrollHeight - pvScroll.clientHeight);
+  setTimeout(() => edLock = false, 80);
+});
+pvScroll.addEventListener('scroll', () => {
+  if (!syncOn || edLock) return;
+  pvLock = true;
+  const r = pvScroll.scrollTop / (pvScroll.scrollHeight - pvScroll.clientHeight || 1);
+  editor.scrollTop = r * (editor.scrollHeight - editor.clientHeight);
+  setTimeout(() => pvLock = false, 80);
+});
+
+// ── Keyboard shortcuts ──
+editor.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'b') { e.preventDefault(); fmt('bold'); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'i') { e.preventDefault(); fmt('italic'); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); downloadMd(); }
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const s = editor.selectionStart;
+    editor.value = editor.value.slice(0, s) + '  ' + editor.value.slice(editor.selectionEnd);
+    editor.setSelectionRange(s + 2, s + 2);
+    render();
+  }
+});
+
+// ── Format buttons ──
+document.querySelectorAll('.fb').forEach(b => b.addEventListener('click', () => fmt(b.dataset.f)));
+
+function fmt(type) {
+  const s = editor.selectionStart, e = editor.selectionEnd;
+  const sel = editor.value.slice(s, e);
+  const pre = editor.value.slice(0, s), post = editor.value.slice(e);
+  let ins = '', cur = 0;
+  const W = { bold: '**', italic: '*', strike: '~~', code: '`' };
+
+  if (W[type]) {
+    const w = W[type], t = sel || { bold: 'bold text', italic: 'italic', strike: 'text', code: 'code' }[type];
+    ins = w + t + w; cur = s + w.length + t.length + w.length;
+  } else if (type === 'h1')  { ins = '# ' + (sel || 'Heading 1'); cur = s + ins.length; }
+  else if (type === 'h2')    { ins = '## ' + (sel || 'Heading 2'); cur = s + ins.length; }
+  else if (type === 'h3')    { ins = '### ' + (sel || 'Heading 3'); cur = s + ins.length; }
+  else if (type === 'ul')    { ins = (sel || 'Item').split('\n').map(l => '- ' + l).join('\n'); cur = s + ins.length; }
+  else if (type === 'ol')    { ins = (sel || 'Item').split('\n').map((l,i) => `${i+1}. ${l}`).join('\n'); cur = s + ins.length; }
+  else if (type === 'check') { ins = (sel || 'Task').split('\n').map(l => '- [ ] ' + l).join('\n'); cur = s + ins.length; }
+  else if (type === 'quote') { ins = '> ' + (sel || 'Note or warning'); cur = s + ins.length; }
+  else if (type === 'codeblock') { ins = '```bash\n' + (sel || '# command here') + '\n```'; cur = s + ins.length; }
+  else if (type === 'hr')    { ins = '\n\n---\n\n'; cur = s + ins.length; }
+  else if (type === 'link')  { const u = prompt('URL:', 'https://'); if (!u) return; ins = '[' + (sel || 'link text') + '](' + u + ')'; cur = s + ins.length; }
+  else if (type === 'img')   { const u = prompt('Image URL:', 'https://'); if (!u) return; ins = '![' + (sel || 'alt text') + '](' + u + ')'; cur = s + ins.length; }
+  else if (type === 'table') { ins = '\n| Column | Type | Required | Description |\n|--------|------|----------|-------------|\n| name   | string | Yes | Your value |\n'; cur = s + ins.length; }
+  else if (type === 'api-get') {
+    ins = '\n### Get Resource\n\n**GET** `/endpoint/{id}`\n\nDescription of what this endpoint does.\n'; cur = s + ins.length;
+  }
+  else if (type === 'api-post') {
+    ins = '\n### Create Resource\n\n**POST** `/endpoint`\n\n#### Request Body\n\n```json\n{\n  "key": "value"\n}\n```\n'; cur = s + ins.length;
+  }
+  else if (type === 'req-table') {
+    ins = '\n| Parameter | Type | Required | Description |\n|-----------|------|----------|-------------|\n| id | string | Yes | Unique identifier |\n| name | string | No | Display name |\n'; cur = s + ins.length;
+  }
+
+  editor.value = pre + ins + post;
+  editor.focus();
+  editor.setSelectionRange(cur, cur);
+  render(); save();
+}
+
+// ════════════════════
+// EXPORT FUNCTIONS
+// ════════════════════
+
+// ── Build clean HTML for PDF/DOC ──
+function buildExportHTML(forPDF = true) {
+  const font    = document.getElementById('pf-font').value || "'IBM Plex Serif',Georgia,serif";
+  const size    = document.getElementById('pf-sz').value || '15.5';
+  const lh      = document.getElementById('pf-lh').value || '1.85';
+  const tc      = forPDF ? '#111827' : (document.getElementById('pf-tc').value || '#111827');
+  const bg      = forPDF ? '#ffffff' : (document.getElementById('pf-bg').value || '#ffffff');
+  const pad     = document.getElementById('pf-pd').value || '44';
+  const content = preview.innerHTML;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"/>
+<style>
+  html,body{margin:0;padding:0;background:${bg};}
+  body{
+    font-family:${font};
+    font-size:${size}px;
+    line-height:${lh};
+    color:${tc};
+    padding:${pad}px;
+    max-width:800px;
+    margin:0 auto;
+  }
+  h1{font-family:'Inter',sans-serif;font-size:1.95em;font-weight:700;letter-spacing:-.5px;color:#111827;margin:.3em 0 .5em;padding-bottom:.4em;border-bottom:2px solid #e5e7eb;line-height:1.2;}
+  h2{font-family:'Inter',sans-serif;font-size:1.35em;font-weight:700;color:#2563eb;margin:1.5em 0 .4em;padding-bottom:.25em;border-bottom:1px solid #e5e7eb;}
+  h3{font-family:'Inter',sans-serif;font-size:1.1em;font-weight:600;color:#111827;margin:1.2em 0 .35em;}
+  h4{font-family:'Inter',sans-serif;font-size:.9em;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin:1em 0 .3em;}
+  p{margin:0 0 .9em;}
+  a{color:#2563eb;text-decoration:none;}
+  strong{font-weight:700;color:#111827;}
+  em{font-style:italic;}
+  ul,ol{margin:0 0 .9em 1.4em;}
+  li{margin:.3em 0;}
+  blockquote{margin:1em 0;padding:12px 16px;background:#eff6ff;border-left:4px solid #2563eb;border-radius:0 6px 6px 0;color:#374151;font-style:italic;}
+  code{font-family:'IBM Plex Mono',monospace;font-size:.84em;background:#f3f4f6;color:#1d4fd8;padding:2px 6px;border-radius:4px;border:1px solid #dbeafe;}
+  pre{background:#1f2937 !important;border-radius:8px;padding:18px 20px;margin:1em 0;overflow-x:auto;page-break-inside:avoid;}
+  pre code{background:transparent;border:none;padding:0;color:#e5e7eb;font-size:.88em;}
+  table{width:100%;border-collapse:collapse;margin:1em 0;font-family:'Inter',sans-serif;font-size:.9em;page-break-inside:avoid;}
+  thead{background:#eff6ff;}
+  th{padding:10px 14px;text-align:left;font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#2563eb;border-bottom:2px solid #dbeafe;white-space:nowrap;}
+  td{padding:9px 14px;border-bottom:1px solid #f3f4f6;color:#374151;vertical-align:top;}
+  tr:nth-child(even) td{background:#fafafa;}
+  img{max-width:100%;border-radius:6px;margin:.8em 0;display:block;}
+  hr{border:none;height:1px;background:#e5e7eb;margin:1.8em 0;}
+  input[type=checkbox]{margin-right:6px;accent-color:#2563eb;}
+  .pv-empty{display:none;}
+  @media print{
+    body{padding:20px;}
+    pre{page-break-inside:avoid;}
+    table{page-break-inside:avoid;}
+    h1,h2,h3{page-break-after:avoid;}
+  }
+</style>
+</head>
+<body>${content}</body>
+</html>`;
+}
+
+// ── PDF Export (print dialog) ──
+document.getElementById('btn-pdf').onclick = function() {
+  if (!editor.value.trim()) { toast('⚠️ Nothing to export. Write or load a document first.', 'err'); return; }
+  const btn = this;
+  btn.textContent = '⏳ PDF…'; btn.disabled = true;
+
+  const html = buildExportHTML(true);
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;border:none;opacity:0;';
+  document.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    setTimeout(() => {
+      try {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        toast('✅ PDF: Use "Save as PDF" in the print dialog', 'ok', 5000);
+      } catch(e) {
+        toast('❌ Could not open print dialog', 'err');
+      }
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="width:14px;height:14px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg> PDF';
+        btn.disabled = false;
+      }, 2000);
+    }, 600);
+  };
+
+  iframe.srcdoc = html;
+};
+
+// ── DOC Export (downloads .doc file openable in Word) ──
+document.getElementById('btn-doc').onclick = function() {
+  if (!editor.value.trim()) { toast('⚠️ Nothing to export.', 'err'); return; }
+
+  const html = buildExportHTML(false);
+
+  // Wrap in a format Word recognises
+  const wordHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office'
+xmlns:w='urn:schemas-microsoft-com:office:word'
+xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset="UTF-8"/>
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content=Microsoft\ Word\ 15>
+<meta name=Originator content=Microsoft\ Word\ 15>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
+<style>
+  body{font-family:Calibri,serif;font-size:11pt;line-height:1.5;color:#111827;margin:72pt;}
+  h1{font-size:20pt;font-weight:bold;color:#111827;margin:0 0 12pt;border-bottom:2pt solid #e5e7eb;padding-bottom:6pt;}
+  h2{font-size:16pt;font-weight:bold;color:#1D4ED8;margin:18pt 0 8pt;border-bottom:1pt solid #e5e7eb;padding-bottom:4pt;}
+  h3{font-size:13pt;font-weight:bold;color:#111827;margin:14pt 0 6pt;}
+  h4{font-size:11pt;font-weight:bold;color:#6B7280;margin:10pt 0 4pt;text-transform:uppercase;}
+  p{margin:0 0 8pt;}
+  a{color:#2563eb;}
+  strong{font-weight:bold;color:#111827;}
+  ul,ol{margin:0 0 8pt;padding-left:20pt;}
+  li{margin:2pt 0;}
+  blockquote{margin:10pt 0;padding:8pt 12pt;border-left:3pt solid #2563EB;background:#EFF6FF;color:#374151;}
+  code{font-family:Consolas,monospace;font-size:10pt;background:#F3F4F6;color:#1D4FD8;padding:1pt 4pt;}
+  pre{background:#1F2937;padding:12pt;margin:10pt 0;font-family:Consolas,monospace;font-size:9pt;}
+  pre code{background:transparent;color:#E5E7EB;padding:0;}
+  table{width:100%;border-collapse:collapse;margin:10pt 0;font-size:10pt;}
+  th{padding:6pt 10pt;background:#EFF6FF;font-weight:bold;font-size:9pt;text-transform:uppercase;color:#1D4FD8;border:1pt solid #DBEAFE;}
+  td{padding:6pt 10pt;border:1pt solid #F3F4F6;color:#374151;vertical-align:top;}
+  img{max-width:100%;}
+  hr{border:none;border-top:1pt solid #E5E7EB;margin:16pt 0;}
+  .pv-empty{display:none;}
+</style>
+</head>
+<body>${preview.innerHTML}</body>
+</html>`;
+
+  const blob = new Blob([wordHtml], { type: 'application/msword;charset=utf-8' });
+  dlBlob(blob, getFilename('doc'));
+  toast('✅ DOC file downloaded — open in Microsoft Word or Google Docs', 'ok', 4000);
+};
+
+// ── TXT Export (clean plain text, no markdown symbols) ──
+document.getElementById('btn-txt').onclick = function() {
+  if (!editor.value.trim()) { toast('⚠️ Nothing to export.', 'err'); return; }
+
+  // Strip markdown syntax → plain readable text
+  let txt = editor.value;
+
+  // Remove HTML tags if any leaked in
+  txt = txt.replace(/<[^>]+>/g, '');
+
+  // Headings → text with separator
+  txt = txt.replace(/^#{1,6}\s+(.+)$/gm, (_, h) => {
+    return h.toUpperCase() + '\n' + '─'.repeat(Math.min(h.length, 60));
+  });
+
+  // Bold / Italic / Strike → plain
+  txt = txt.replace(/\*\*(.+?)\*\*/g, '$1');
+  txt = txt.replace(/\*(.+?)\*/g, '$1');
+  txt = txt.replace(/~~(.+?)~~/g, '$1');
+
+  // Inline code → keep content, remove backticks
+  txt = txt.replace(/`([^`]+)`/g, '$1');
+
+  // Code blocks → preserve content
+  txt = txt.replace(/```[\w]*\n([\s\S]*?)```/g, (_, code) => {
+    return '---CODE---\n' + code.trim() + '\n---END---';
+  });
+
+  // Links → text (URL)
+  txt = txt.replace(/\[(.+?)\]\((.+?)\)/g, '$1 ($2)');
+
+  // Images → [Image: alt]
+  txt = txt.replace(/!\[(.+?)\]\(.+?\)/g, '[Image: $1]');
+
+  // Blockquote
+  txt = txt.replace(/^>\s+(.+)$/gm, '  NOTE: $1');
+
+  // Task list
+  txt = txt.replace(/^- \[x\]\s+(.+)$/gm, '  [DONE] $1');
+  txt = txt.replace(/^- \[ \]\s+(.+)$/gm, '  [TODO] $1');
+
+  // Table → simple text (keep pipe structure)
+  // Remove |---| rows
+  txt = txt.replace(/^\|[-| :]+\|$/gm, '');
+
+  // Clean extra blank lines
+  txt = txt.replace(/\n{3,}/g, '\n\n');
+
+  const header = `DOCUMENT EXPORT — DocForge
+Generated: ${new Date().toLocaleString()}
+${'═'.repeat(60)}\n\n`;
+
+  const blob = new Blob([header + txt.trim()], { type: 'text/plain;charset=utf-8' });
+  dlBlob(blob, getFilename('txt'));
+  toast('✅ TXT file downloaded', 'ok');
+};
+
+// ── Download helper ──
+function dlBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 3000);
+}
+
+// ── Copy markdown ──
+document.getElementById('btn-copy').onclick = () => {
+  if (!editor.value) { toast('⚠️ Nothing to copy', 'err'); return; }
+  navigator.clipboard.writeText(editor.value)
+    .then(() => toast('✅ Markdown copied to clipboard', 'ok'))
+    .catch(() => { toast('❌ Copy failed — please select all and copy manually', 'err'); });
+};
+
+// ── Download .md ──
+function downloadMd() {
+  if (!editor.value) { toast('⚠️ Nothing to save', 'err'); return; }
+  dlBlob(new Blob([editor.value], { type: 'text/markdown;charset=utf-8' }), getFilename('md'));
+  toast('✅ Markdown file saved', 'ok');
+}
+document.getElementById('btn-dlmd').onclick = downloadMd;
+
+// ── Clear ──
+document.getElementById('btn-clear').onclick = () => {
+  if (!editor.value || confirm('Clear editor? This cannot be undone.')) {
+    editor.value = ''; render(); save(); toast('🗑️ Editor cleared', 'info');
+  }
+};
+
+// ── Theme toggle ──
+let dark = false;
+document.getElementById('btn-theme').onclick = () => {
+  dark = !dark;
+  if (dark) {
+    document.documentElement.setAttribute('data-dark', '');
+    document.getElementById('ico-moon').style.display = 'none';
+    document.getElementById('ico-sun').style.display = '';
+    document.getElementById('hljs-theme').href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css';
+    document.getElementById('pf-tc').value = '#e6eaf5';
+    document.getElementById('pf-bg').value = '#161b27';
+  } else {
+    document.documentElement.removeAttribute('data-dark');
+    document.getElementById('ico-moon').style.display = '';
+    document.getElementById('ico-sun').style.display = 'none';
+    document.getElementById('hljs-theme').href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css';
+    document.getElementById('pf-tc').value = '#0f1629';
+    document.getElementById('pf-bg').value = '#ffffff';
+  }
+  applyPreviewStyle();
+  toast(dark ? '🌙 Dark mode' : '☀️ Light mode', 'info');
+};
+
+// ── Settings panel ──
+document.getElementById('btn-settings').onclick = () => panel.classList.toggle('open');
+
+// ── Apply preview styles ──
+function applyPreviewStyle() {
+  preview.style.fontFamily   = document.getElementById('pf-font').value;
+  preview.style.fontSize     = document.getElementById('pf-sz').value + 'px';
+  preview.style.lineHeight   = document.getElementById('pf-lh').value;
+  preview.style.color        = document.getElementById('pf-tc').value;
+  preview.style.background   = document.getElementById('pf-bg').value;
+  preview.style.padding      = document.getElementById('pf-pd').value + 'px';
+}
+
+// Settings listeners
+document.getElementById('pf-font').onchange = applyPreviewStyle;
+document.getElementById('pf-tc').oninput    = applyPreviewStyle;
+document.getElementById('pf-bg').oninput    = applyPreviewStyle;
+
+document.getElementById('pf-sz').oninput = function() {
+  document.getElementById('v-sz').textContent = this.value + 'px';
+  applyPreviewStyle();
+};
+document.getElementById('pf-lh').oninput = function() {
+  document.getElementById('v-lh').textContent = parseFloat(this.value).toFixed(2);
+  applyPreviewStyle();
+};
+document.getElementById('pf-pd').oninput = function() {
+  document.getElementById('v-pd').textContent = this.value + 'px';
+  applyPreviewStyle();
+};
+
+document.getElementById('wchips').onclick = e => {
+  const c = e.target.closest('.w-chip'); if (!c) return;
+  document.querySelectorAll('.w-chip').forEach(x => x.classList.remove('on'));
+  c.classList.add('on');
+  preview.style.maxWidth = c.dataset.w;
+};
+
+document.getElementById('t-hl').onchange = () => render();
+document.getElementById('t-ss').onchange = function() { syncOn = this.checked; };
+document.getElementById('pf-css').oninput = function() {
+  document.getElementById('css-inject').textContent = this.value;
+};
+
+// ── Resizer ──
+const rsz = document.getElementById('rsz');
+const edPane = document.getElementById('ed-pane');
+const pvPane = document.getElementById('pv-pane');
+const mainEl = document.getElementById('main');
+let resizing = false;
+rsz.addEventListener('mousedown', () => {
+  resizing = true;
+  document.body.style.cursor = 'col-resize';
+  document.body.style.userSelect = 'none';
+});
+document.addEventListener('mousemove', e => {
+  if (!resizing) return;
+  const rect = mainEl.getBoundingClientRect();
+  const pW = panel.classList.contains('open') ? 260 : 0;
+  const avail = rect.width - 4 - pW;
+  const ratio = Math.min(Math.max((e.clientX - rect.left) / avail, 0.2), 0.8);
+  edPane.style.flex = `0 0 ${ratio * 100}%`;
+  pvPane.style.flex = `0 0 ${(1 - ratio) * 100}%`;
+});
+document.addEventListener('mouseup', () => {
+  if (!resizing) return;
+  resizing = false;
+  document.body.style.cursor = '';
+  document.body.style.userSelect = '';
+});
+
+// ── File upload ──
+document.getElementById('file-input').onchange = function() {
+  const f = this.files[0]; if (!f) return;
+  loadFile(f); this.value = '';
+};
+function loadFile(f) {
+  const r = new FileReader();
+  r.onload = e => { editor.value = e.target.result; render(); save(); toast(`✅ Loaded: ${f.name}`, 'ok'); };
+  r.onerror = () => toast('❌ Could not read file', 'err');
+  r.readAsText(f);
+}
+
+// ── Drag & Drop ──
+let dc = 0;
+document.addEventListener('dragenter', e => { e.preventDefault(); if (++dc === 1) dropZone.classList.add('on'); });
+document.addEventListener('dragleave', () => { if (--dc === 0) dropZone.classList.remove('on'); });
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => {
+  e.preventDefault(); dc = 0; dropZone.classList.remove('on');
+  const f = e.dataTransfer.files[0];
+  if (f && (f.name.match(/\.(md|txt|markdown)$/i) || f.type === 'text/plain')) loadFile(f);
+  else toast('⚠️ Please drop a .md, .markdown, or .txt file', 'err');
+});
+
+// ── Toast ──
+function toast(msg, type = 'info', ms = 3000) {
+  const icons = { ok: '✅', err: '❌', info: 'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-ico">${icons[type] || 'ℹ️'}</span><span>${msg}</span>`;
+  toastsEl.appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 220); }, ms);
+}
+
+// ── INIT ──
+restore();
+applyPreviewStyle();
+</script>
+</body>
+</html>
