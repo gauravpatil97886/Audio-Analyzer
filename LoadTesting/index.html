@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LoadForge — API Load Testing Console</title>
+<title>LoadForge — Professional API Load Testing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -23,6 +23,7 @@
     --warn: #ffb545;
     --err: #ff5c5c;
     --info: #5cb8ff;
+    --purple: #b57aff;
     --mono: 'JetBrains Mono', ui-monospace, monospace;
     --sans: 'Geist', -apple-system, sans-serif;
     --serif: 'Instrument Serif', serif;
@@ -56,64 +57,38 @@
     top: 0;
     z-index: 100;
   }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
+  .logo { display: flex; align-items: center; gap: 14px; }
   .logo-mark {
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     background: var(--accent);
     border-radius: 6px;
-    display: grid;
-    place-items: center;
-    color: #000;
-    font-weight: 700;
-    font-family: var(--mono);
-    font-size: 16px;
-    position: relative;
-    overflow: hidden;
+    display: grid; place-items: center;
+    color: #000; font-weight: 700;
+    font-family: var(--mono); font-size: 16px;
+    position: relative; overflow: hidden;
   }
   .logo-mark::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.3));
   }
   .logo h1 {
-    font-family: var(--serif);
-    font-size: 22px;
-    font-weight: 400;
-    letter-spacing: -0.02em;
+    font-family: var(--serif); font-size: 22px;
+    font-weight: 400; letter-spacing: -0.02em;
   }
-  .logo h1 em {
-    color: var(--accent);
-    font-style: italic;
-  }
+  .logo h1 em { color: var(--accent); font-style: italic; }
   .header-meta {
-    display: flex;
-    gap: 24px;
-    align-items: center;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    text-transform: uppercase;
+    display: flex; gap: 24px; align-items: center;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-dim); text-transform: uppercase;
     letter-spacing: 0.08em;
   }
   .status-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--bg-elev);
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border: 1px solid var(--border);
+    border-radius: 999px; background: var(--bg-elev);
   }
   .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
+    width: 7px; height: 7px; border-radius: 50%;
     background: var(--text-faint);
   }
   .status-dot.idle { background: var(--text-faint); }
@@ -128,114 +103,92 @@
   /* LAYOUT */
   main {
     display: grid;
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 400px 1fr;
     gap: 0;
-    min-height: calc(100vh - 67px);
   }
   .sidebar {
     border-right: 1px solid var(--border);
     padding: 24px;
     overflow-y: auto;
     max-height: calc(100vh - 67px);
-    position: sticky;
-    top: 67px;
+    position: sticky; top: 67px;
   }
-  .dashboard {
-    padding: 28px;
-    overflow: hidden;
+  .dashboard { padding: 28px; overflow: hidden; }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 2px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px;
+    margin-bottom: 16px;
   }
+  .tab {
+    flex: 1; padding: 7px 10px;
+    background: transparent; border: none;
+    color: var(--text-dim);
+    font-family: var(--mono); font-size: 10px;
+    font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; cursor: pointer;
+    border-radius: 4px; transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: var(--bg-panel); color: var(--accent); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
   /* FORM */
   .section-title {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
   }
   .section-title::before {
-    content: '';
-    width: 14px;
-    height: 1px;
-    background: var(--accent);
+    content: ''; width: 14px; height: 1px; background: var(--accent);
   }
-  .field {
-    margin-bottom: 16px;
-  }
+  .field { margin-bottom: 16px; }
   .field label {
-    display: block;
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-bottom: 6px;
-    font-weight: 500;
+    display: block; font-size: 12px; color: var(--text-dim);
+    margin-bottom: 6px; font-weight: 500;
+    display: flex; justify-content: space-between;
+  }
+  .field label .hint-inline {
+    color: var(--text-faint); font-size: 10px; font-weight: 400;
   }
   .input, .select, .textarea {
-    width: 100%;
-    background: var(--bg-elev);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 10px 12px;
-    border-radius: 6px;
-    font-family: var(--mono);
-    font-size: 13px;
+    width: 100%; background: var(--bg-elev);
+    border: 1px solid var(--border); color: var(--text);
+    padding: 10px 12px; border-radius: 6px;
+    font-family: var(--mono); font-size: 13px;
     transition: border-color 0.15s, background 0.15s;
   }
   .input:focus, .select:focus, .textarea:focus {
-    outline: none;
-    border-color: var(--accent);
-    background: #1a1a1f;
+    outline: none; border-color: var(--accent); background: #1a1a1f;
   }
-  .textarea {
-    resize: vertical;
-    min-height: 70px;
-    line-height: 1.6;
-  }
-  .row-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
+  .textarea { resize: vertical; min-height: 70px; line-height: 1.6; }
+  .textarea.curl { min-height: 120px; font-size: 12px; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   /* METHOD SELECTOR */
-  .method-group {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
+  .method-group { display: flex; gap: 6px; flex-wrap: wrap; }
   .method-btn {
-    padding: 6px 10px;
-    background: var(--bg-elev);
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s;
+    padding: 6px 10px; background: var(--bg-elev);
+    border: 1px solid var(--border); color: var(--text-dim);
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    border-radius: 4px; cursor: pointer; transition: all 0.15s;
   }
   .method-btn:hover { border-color: var(--border-bright); color: var(--text); }
   .method-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
 
   /* TEST TYPE CARDS */
-  .test-types {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
+  .test-types { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .test-card {
-    border: 1px solid var(--border);
-    background: var(--bg-elev);
-    border-radius: 6px;
-    padding: 10px 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-    position: relative;
+    border: 1px solid var(--border); background: var(--bg-elev);
+    border-radius: 6px; padding: 10px 12px; cursor: pointer;
+    transition: all 0.15s; position: relative;
   }
   .test-card:hover { border-color: var(--border-bright); }
   .test-card.active {
@@ -243,241 +196,172 @@
     background: rgba(212,255,58,0.06);
   }
   .test-card.active::after {
-    content: '●';
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    color: var(--accent);
-    font-size: 8px;
+    content: '●'; position: absolute; top: 8px; right: 10px;
+    color: var(--accent); font-size: 8px;
   }
   .test-card-name {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 2px;
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;
   }
-  .test-card-desc {
-    font-size: 10px;
-    color: var(--text-dim);
-    line-height: 1.4;
+  .test-card-desc { font-size: 10px; color: var(--text-dim); line-height: 1.4; }
+
+  /* CHECKBOXES */
+  .check-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; background: var(--bg-elev);
+    border: 1px solid var(--border); border-radius: 6px;
+    margin-bottom: 6px; cursor: pointer; transition: all 0.15s;
   }
+  .check-row:hover { border-color: var(--border-bright); }
+  .check-row input { accent-color: var(--accent); }
+  .check-row label {
+    color: var(--text); font-size: 12px; cursor: pointer;
+    flex: 1; margin: 0; font-weight: 500;
+  }
+  .check-row .cr-hint { color: var(--text-faint); font-size: 10px; font-family: var(--mono); }
+
+  /* ASSERTIONS */
+  .assertion-item {
+    display: grid; grid-template-columns: 1fr 80px 24px;
+    gap: 6px; margin-bottom: 6px; align-items: center;
+  }
+  .assertion-item .input { font-size: 11px; padding: 6px 8px; }
+  .rm-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--err); width: 24px; height: 28px; border-radius: 4px;
+    cursor: pointer; font-size: 14px;
+  }
+  .rm-btn:hover { border-color: var(--err); }
 
   /* BUTTONS */
   .btn-primary {
-    width: 100%;
-    padding: 13px;
-    background: var(--accent);
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    font-family: var(--mono);
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: all 0.15s;
-    margin-top: 8px;
+    width: 100%; padding: 13px; background: var(--accent);
+    color: #000; border: none; border-radius: 6px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    cursor: pointer; transition: all 0.15s; margin-top: 8px;
   }
   .btn-primary:hover { background: #e5ff4d; transform: translateY(-1px); }
   .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-  .btn-primary.stop {
-    background: var(--err);
-    color: #fff;
-  }
+  .btn-primary.stop { background: var(--err); color: #fff; }
   .btn-primary.stop:hover { background: #ff7878; }
   .btn-ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-family: var(--mono);
-    font-size: 11px;
-    cursor: pointer;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-dim); padding: 8px 12px; border-radius: 6px;
+    font-family: var(--mono); font-size: 11px; cursor: pointer;
     transition: all 0.15s;
   }
   .btn-ghost:hover { border-color: var(--border-bright); color: var(--text); }
+  .btn-parse {
+    width: 100%; padding: 8px;
+    background: var(--bg-elev); border: 1px dashed var(--accent);
+    color: var(--accent); border-radius: 6px;
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s; margin-bottom: 10px;
+  }
+  .btn-parse:hover { background: rgba(212,255,58,0.06); }
 
   /* DASHBOARD */
   .dash-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 24px; padding-bottom: 16px;
     border-bottom: 1px solid var(--border);
   }
   .dash-title {
-    font-family: var(--serif);
-    font-size: 36px;
-    font-weight: 400;
-    letter-spacing: -0.03em;
-    line-height: 1;
+    font-family: var(--serif); font-size: 36px; font-weight: 400;
+    letter-spacing: -0.03em; line-height: 1;
   }
-  .dash-title em {
-    color: var(--accent);
-    font-style: italic;
-  }
+  .dash-title em { color: var(--accent); font-style: italic; }
   .dash-subtitle {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-dim); margin-top: 6px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    max-width: 700px;
   }
-  .dash-actions {
-    display: flex;
-    gap: 8px;
-  }
+  .dash-actions { display: flex; gap: 8px; }
 
   /* KPI GRID */
   .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 12px; margin-bottom: 20px;
   }
   .kpi {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px 16px;
-    position: relative;
-    overflow: hidden;
+    background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+    position: relative; overflow: hidden;
   }
   .kpi-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text-dim);
-    margin-bottom: 8px;
+    font-family: var(--mono); font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-dim); margin-bottom: 8px;
   }
   .kpi-value {
-    font-family: var(--mono);
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1;
+    font-family: var(--mono); font-size: 24px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1;
   }
-  .kpi-unit {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-weight: 400;
-    margin-left: 2px;
-  }
-  .kpi-sub {
-    font-size: 10px;
-    color: var(--text-faint);
-    font-family: var(--mono);
-    margin-top: 6px;
-  }
+  .kpi-unit { font-size: 11px; color: var(--text-dim); font-weight: 400; margin-left: 2px; }
+  .kpi-sub { font-size: 10px; color: var(--text-faint); font-family: var(--mono); margin-top: 6px; }
   .kpi.highlight { border-color: var(--accent); }
   .kpi.highlight .kpi-value { color: var(--accent); }
 
   /* CHARTS */
   .chart-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
+    display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px;
   }
   .chart-grid-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
   }
   .panel {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 18px;
+    background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 18px;
   }
   .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 14px;
   }
   .panel-title {
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-dim);
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim);
   }
   .panel-legend {
-    display: flex;
-    gap: 12px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
+    display: flex; gap: 12px; font-family: var(--mono);
+    font-size: 10px; color: var(--text-dim);
   }
   .legend-item { display: flex; align-items: center; gap: 5px; }
   .legend-dot { width: 8px; height: 2px; border-radius: 1px; }
-
   canvas { display: block; width: 100%; }
 
   /* STATUS BREAKDOWN */
-  .status-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .status-bars { display: flex; flex-direction: column; gap: 10px; }
   .status-bar-row {
-    display: grid;
-    grid-template-columns: 50px 1fr 60px;
-    gap: 10px;
-    align-items: center;
-    font-family: var(--mono);
-    font-size: 11px;
+    display: grid; grid-template-columns: 50px 1fr 60px;
+    gap: 10px; align-items: center;
+    font-family: var(--mono); font-size: 11px;
   }
-  .status-code {
-    font-weight: 600;
-  }
+  .status-code { font-weight: 600; }
   .status-2xx { color: var(--ok); }
   .status-3xx { color: var(--info); }
   .status-4xx { color: var(--warn); }
   .status-5xx { color: var(--err); }
   .status-err { color: var(--err); }
   .status-bar-track {
-    height: 6px;
-    background: var(--bg);
-    border-radius: 3px;
-    overflow: hidden;
-    border: 1px solid var(--border);
+    height: 6px; background: var(--bg); border-radius: 3px;
+    overflow: hidden; border: 1px solid var(--border);
   }
-  .status-bar-fill {
-    height: 100%;
-    transition: width 0.3s;
-  }
-  .status-count {
-    text-align: right;
-    color: var(--text-dim);
-  }
+  .status-bar-fill { height: 100%; transition: width 0.3s; }
+  .status-count { text-align: right; color: var(--text-dim); }
 
   /* LOG */
   .log {
-    max-height: 200px;
-    overflow-y: auto;
-    font-family: var(--mono);
-    font-size: 11px;
-    background: var(--bg);
-    border-radius: 6px;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
+    max-height: 220px; overflow-y: auto;
+    font-family: var(--mono); font-size: 11px;
+    background: var(--bg); border-radius: 6px;
+    padding: 10px 12px; border: 1px solid var(--border);
   }
   .log-line {
-    color: var(--text-dim);
-    padding: 2px 0;
-    display: flex;
-    gap: 10px;
+    color: var(--text-dim); padding: 2px 0;
+    display: flex; gap: 10px;
   }
   .log-time { color: var(--text-faint); min-width: 70px; }
   .log-line.ok .log-status { color: var(--ok); }
@@ -487,142 +371,323 @@
   .log-url { color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .log-ms { color: var(--text-dim); min-width: 60px; text-align: right; }
 
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 28px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-dim);
+  }
+  footer .credit { color: var(--accent); }
+  footer .credit strong { color: var(--text); font-weight: 600; }
+
   /* REPORT MODAL */
   .modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.9);
     backdrop-filter: blur(8px);
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
+    z-index: 1000; display: none;
+    align-items: center; justify-content: center;
+    padding: 40px 20px; overflow-y: auto;
   }
   .modal.show { display: flex; }
-  .report {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+
+  /* PROFESSIONAL REPORT */
+  .report-doc {
+    background: #fafaf7;
+    color: #1a1a1a;
     width: 100%;
-    max-width: 900px;
-    max-height: 90vh;
+    max-width: 980px;
+    max-height: 92vh;
     overflow-y: auto;
-    padding: 32px;
+    border-radius: 4px;
+    font-family: var(--sans);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
   }
-  .report-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
+  .report-doc .rpt-toolbar {
+    position: sticky; top: 0; z-index: 10;
+    background: #1a1a1a; color: #fff;
+    padding: 12px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px;
   }
-  .report h2 {
-    font-family: var(--serif);
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: -0.02em;
+  .report-doc .rpt-toolbar button {
+    background: transparent; border: 1px solid #444;
+    color: #fff; padding: 6px 12px; border-radius: 4px;
+    font-family: var(--mono); font-size: 11px;
+    cursor: pointer; margin-left: 6px;
   }
-  .report-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
+  .report-doc .rpt-toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+  .report-doc .rpt-toolbar button.primary { background: var(--accent); color: #000; border-color: var(--accent); }
+
+  .report-doc .rpt-body { padding: 50px 60px; }
+
+  /* printable styles inside report */
+  .rpt-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    border-bottom: 2px solid #1a1a1a; padding-bottom: 24px; margin-bottom: 32px;
   }
-  .report-stat {
-    padding: 14px;
-    background: var(--bg-elev);
+  .rpt-head .brand {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .rpt-head .brand-mark {
+    width: 40px; height: 40px;
+    background: #1a1a1a; color: #d4ff3a;
+    display: grid; place-items: center;
+    font-family: var(--mono); font-weight: 700; font-size: 18px;
     border-radius: 6px;
-    border: 1px solid var(--border);
   }
-  .report-stat-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text-dim);
-    margin-bottom: 6px;
+  .rpt-head .brand-name {
+    font-family: var(--serif); font-size: 28px; font-weight: 400;
+    color: #1a1a1a; letter-spacing: -0.02em;
   }
-  .report-stat-val {
+  .rpt-head .brand-name em { font-style: italic; color: #5a7a10; }
+  .rpt-head .brand-tag {
+    font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.15em; color: #666; margin-top: 2px;
+  }
+  .rpt-head .meta {
+    text-align: right; font-family: var(--mono); font-size: 10px;
+    color: #666; text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .rpt-head .meta strong { color: #1a1a1a; display: block; font-size: 11px; margin-bottom: 2px; }
+  .rpt-head .meta .report-id {
+    margin-top: 8px; padding: 4px 8px;
+    background: #1a1a1a; color: #d4ff3a;
+    display: inline-block; border-radius: 3px;
+  }
+
+  .rpt-title {
+    font-family: var(--serif); font-size: 44px; font-weight: 400;
+    color: #1a1a1a; letter-spacing: -0.03em; line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .rpt-title em { font-style: italic; color: #5a7a10; }
+  .rpt-subtitle {
+    font-size: 14px; color: #666;
+    margin-bottom: 32px;
     font-family: var(--mono);
-    font-size: 18px;
+  }
+
+  /* verdict banner */
+  .verdict-banner {
+    padding: 20px 24px; border-radius: 6px;
+    margin-bottom: 32px; display: flex; gap: 20px; align-items: center;
+    border-left: 6px solid;
+  }
+  .verdict-banner .vb-icon {
+    font-size: 32px; font-weight: 700; font-family: var(--mono);
+    width: 56px; height: 56px; border-radius: 50%;
+    display: grid; place-items: center;
+    color: #fff;
+  }
+  .verdict-banner.pass { background: #ecfdf3; border-color: #12b76a; }
+  .verdict-banner.pass .vb-icon { background: #12b76a; }
+  .verdict-banner.warn { background: #fff8eb; border-color: #f79009; }
+  .verdict-banner.warn .vb-icon { background: #f79009; }
+  .verdict-banner.fail { background: #fef3f2; border-color: #f04438; }
+  .verdict-banner.fail .vb-icon { background: #f04438; }
+  .verdict-banner h3 {
+    font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;
+  }
+  .verdict-banner p { font-size: 13px; color: #444; line-height: 1.5; }
+
+  /* section */
+  .rpt-section { margin-bottom: 40px; page-break-inside: avoid; }
+  .rpt-section h2 {
+    font-family: var(--serif); font-size: 24px; font-weight: 400;
+    color: #1a1a1a; margin-bottom: 4px; letter-spacing: -0.01em;
+  }
+  .rpt-section .section-intro {
+    font-size: 13px; color: #666; margin-bottom: 16px;
+    font-style: italic;
+  }
+  .rpt-section h3 {
+    font-family: var(--mono); font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: #444; margin-bottom: 14px; margin-top: 20px;
+    padding-bottom: 6px; border-bottom: 1px solid #e0e0d8;
+  }
+
+  .exec-summary {
+    background: #fff; border: 1px solid #e0e0d8;
+    border-radius: 6px; padding: 20px 24px; margin-bottom: 24px;
+  }
+  .exec-summary p {
+    font-size: 14px; color: #333; line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .exec-summary p:last-child { margin-bottom: 0; }
+
+  /* stats grid */
+  .rpt-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 12px; margin-bottom: 24px;
+  }
+  .rpt-stat {
+    padding: 16px; background: #fff;
+    border: 1px solid #e0e0d8; border-radius: 6px;
+  }
+  .rpt-stat-label {
+    font-family: var(--mono); font-size: 9px; text-transform: uppercase;
+    letter-spacing: 0.12em; color: #888; margin-bottom: 6px;
+  }
+  .rpt-stat-val {
+    font-family: var(--mono); font-size: 22px; font-weight: 700;
+    color: #1a1a1a; letter-spacing: -0.02em;
+  }
+  .rpt-stat-val .unit {
+    font-size: 12px; color: #888; font-weight: 400; margin-left: 3px;
+  }
+  .rpt-stat-val.ok { color: #12b76a; }
+  .rpt-stat-val.warn { color: #f79009; }
+  .rpt-stat-val.err { color: #f04438; }
+  .rpt-stat-sub {
+    font-size: 11px; color: #666; margin-top: 4px; font-family: var(--mono);
+  }
+
+  /* table */
+  .rpt-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px; background: #fff;
+    border: 1px solid #e0e0d8; border-radius: 6px; overflow: hidden;
+  }
+  .rpt-table th {
+    background: #1a1a1a; color: #fff;
+    padding: 10px 14px; text-align: left;
+    font-family: var(--mono); font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.1em;
     font-weight: 600;
   }
-  .report-section {
-    margin-bottom: 24px;
-  }
-  .report-section h3 {
+  .rpt-table td {
+    padding: 10px 14px; border-bottom: 1px solid #eeeee5;
     font-family: var(--mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text-dim);
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
   }
-  .report-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: var(--mono);
-    font-size: 12px;
-  }
-  .report-table td {
-    padding: 8px 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  .report-table td:first-child { color: var(--text-dim); }
-  .report-table td:last-child { text-align: right; font-weight: 600; }
-  .verdict {
-    padding: 16px;
-    border-radius: 8px;
-    font-family: var(--mono);
-    font-size: 12px;
-    line-height: 1.7;
-    border: 1px solid;
-  }
-  .verdict.pass { border-color: var(--ok); background: rgba(61,220,132,0.06); }
-  .verdict.warn { border-color: var(--warn); background: rgba(255,181,69,0.06); }
-  .verdict.fail { border-color: var(--err); background: rgba(255,92,92,0.06); }
-  .verdict-title {
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    font-size: 11px;
-  }
-  .verdict.pass .verdict-title { color: var(--ok); }
-  .verdict.warn .verdict-title { color: var(--warn); }
-  .verdict.fail .verdict-title { color: var(--err); }
+  .rpt-table tr:last-child td { border-bottom: none; }
+  .rpt-table td:first-child { color: #444; }
+  .rpt-table .num { text-align: right; font-weight: 600; color: #1a1a1a; }
 
-  /* SCROLLBAR */
+  /* explain box */
+  .explain {
+    background: #f5f5ee; border-left: 3px solid #d4ff3a;
+    padding: 12px 16px; margin-top: 14px;
+    font-size: 12px; color: #555; line-height: 1.6;
+  }
+  .explain strong { color: #1a1a1a; }
+
+  /* insights */
+  .insight-list {
+    display: grid; gap: 10px;
+  }
+  .insight {
+    background: #fff; border: 1px solid #e0e0d8;
+    border-radius: 6px; padding: 14px 16px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .insight .ins-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 14px; color: #fff;
+    flex-shrink: 0;
+  }
+  .insight.good .ins-icon { background: #12b76a; }
+  .insight.warn .ins-icon { background: #f79009; }
+  .insight.bad .ins-icon { background: #f04438; }
+  .insight.info .ins-icon { background: #5cb8ff; }
+  .insight .ins-body h4 {
+    font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px;
+  }
+  .insight .ins-body p {
+    font-size: 12px; color: #555; line-height: 1.55;
+  }
+
+  /* recommendation */
+  .recs {
+    display: grid; gap: 10px;
+  }
+  .rec {
+    background: #fff; border: 1px solid #e0e0d8;
+    border-radius: 6px; padding: 14px 16px;
+  }
+  .rec-title {
+    font-size: 13px; font-weight: 600; color: #1a1a1a;
+    margin-bottom: 4px; display: flex; align-items: center; gap: 8px;
+  }
+  .rec-priority {
+    font-family: var(--mono); font-size: 9px;
+    padding: 2px 6px; border-radius: 3px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .rec-priority.high { background: #fef3f2; color: #b42318; }
+  .rec-priority.med { background: #fff8eb; color: #b54708; }
+  .rec-priority.low { background: #ecfdf3; color: #027a48; }
+  .rec-body {
+    font-size: 12px; color: #555; line-height: 1.6; margin-top: 6px;
+  }
+  .rec-body code {
+    background: #f5f5ee; padding: 1px 5px; border-radius: 3px;
+    font-family: var(--mono); font-size: 11px; color: #5a7a10;
+  }
+
+  /* charts inside report (SVG) */
+  .rpt-chart {
+    width: 100%; background: #fff; border: 1px solid #e0e0d8;
+    border-radius: 6px; padding: 16px;
+  }
+
+  /* footer of report */
+  .rpt-footer {
+    margin-top: 48px; padding-top: 20px;
+    border-top: 2px solid #1a1a1a;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 10px; color: #666;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .rpt-footer .sig {
+    color: #1a1a1a; font-weight: 600;
+  }
+  .rpt-footer .sig strong { color: #5a7a10; }
+
+  /* print */
+  @media print {
+    body > *:not(.modal) { display: none !important; }
+    .modal { position: static !important; display: block !important; background: #fff !important; padding: 0 !important; overflow: visible !important; }
+    .report-doc { max-height: none !important; max-width: none !important; box-shadow: none !important; border-radius: 0 !important; overflow: visible !important; }
+    .rpt-toolbar { display: none !important; }
+    .rpt-body { padding: 30px !important; }
+    .rpt-section { page-break-inside: avoid; }
+    .verdict-banner { page-break-after: avoid; }
+  }
+
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
 
-  /* HELPER */
-  .hint {
-    font-size: 11px;
-    color: var(--text-faint);
-    margin-top: 4px;
-    line-height: 1.4;
-  }
+  .hint { font-size: 11px; color: var(--text-faint); margin-top: 4px; line-height: 1.4; }
   .cors-warning {
     background: rgba(255,181,69,0.08);
     border: 1px solid rgba(255,181,69,0.3);
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-size: 11px;
-    color: var(--warn);
-    margin-bottom: 16px;
-    line-height: 1.5;
+    border-radius: 6px; padding: 10px 12px;
+    font-size: 11px; color: var(--warn);
+    margin-bottom: 16px; line-height: 1.5;
   }
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--bg-panel); border: 1px solid var(--ok);
+    color: var(--ok); padding: 12px 18px; border-radius: 6px;
+    font-family: var(--mono); font-size: 12px; z-index: 2000;
+    transform: translateY(20px); opacity: 0;
+    transition: all 0.3s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.err { border-color: var(--err); color: var(--err); }
 
   @media (max-width: 1200px) {
-    main { grid-template-columns: 340px 1fr; }
+    main { grid-template-columns: 360px 1fr; }
     .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .rpt-stats { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
@@ -633,7 +698,7 @@
     <h1>Load<em>Forge</em></h1>
   </div>
   <div class="header-meta">
-    <span>v1.0 / browser-native</span>
+    <span>v2.0 · professional</span>
     <div class="status-pill">
       <div class="status-dot idle" id="statusDot"></div>
       <span id="statusText">Idle</span>
@@ -645,51 +710,117 @@
   <!-- SIDEBAR CONFIG -->
   <aside class="sidebar">
     <div class="cors-warning">
-      ⚠ Browser tests require target API to allow CORS for this origin. For production-grade tests without CORS limits, use a backend runner.
+      ⚠ Browser tests need target API to allow CORS. For CORS-blocked APIs, a Node runner is required.
     </div>
 
-    <div class="section-title">Target endpoint</div>
-    <div class="field">
-      <label>Method</label>
-      <div class="method-group" id="methodGroup">
-        <button class="method-btn active" data-method="GET">GET</button>
-        <button class="method-btn" data-method="POST">POST</button>
-        <button class="method-btn" data-method="PUT">PUT</button>
-        <button class="method-btn" data-method="PATCH">PATCH</button>
-        <button class="method-btn" data-method="DELETE">DELETE</button>
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" data-tab="manual">Manual</button>
+      <button class="tab" data-tab="curl">Paste cURL</button>
+      <button class="tab" data-tab="advanced">Advanced</button>
+    </div>
+
+    <!-- MANUAL TAB -->
+    <div class="tab-panel active" data-panel="manual">
+      <div class="section-title">Target endpoint</div>
+      <div class="field">
+        <label>Method</label>
+        <div class="method-group" id="methodGroup">
+          <button class="method-btn active" data-method="GET">GET</button>
+          <button class="method-btn" data-method="POST">POST</button>
+          <button class="method-btn" data-method="PUT">PUT</button>
+          <button class="method-btn" data-method="PATCH">PATCH</button>
+          <button class="method-btn" data-method="DELETE">DELETE</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>URL</label>
+        <input type="text" class="input" id="urlInput" placeholder="https://api.example.com/v1/users" value="https://jsonplaceholder.typicode.com/posts/1" />
+      </div>
+      <div class="field">
+        <label>Headers <span class="hint-inline">one per line</span></label>
+        <textarea class="textarea" id="headersInput" placeholder="Authorization: Bearer eyJhbGc...
+Content-Type: application/json"></textarea>
+      </div>
+      <div class="field" id="bodyField" style="display:none">
+        <label>Request body (JSON)</label>
+        <textarea class="textarea" id="bodyInput" placeholder='{"key": "value"}'></textarea>
       </div>
     </div>
-    <div class="field">
-      <label>URL</label>
-      <input type="text" class="input" id="urlInput" placeholder="https://api.example.com/v1/users" value="https://jsonplaceholder.typicode.com/posts/1" />
-    </div>
-    <div class="field">
-      <label>Headers (one per line, Key: Value)</label>
-      <textarea class="textarea" id="headersInput" placeholder="Authorization: Bearer eyJhbGc...
-Content-Type: application/json"></textarea>
-    </div>
-    <div class="field" id="bodyField" style="display:none">
-      <label>Request body (JSON)</label>
-      <textarea class="textarea" id="bodyInput" placeholder='{"key": "value"}'></textarea>
+
+    <!-- CURL TAB -->
+    <div class="tab-panel" data-panel="curl">
+      <div class="section-title">Import from cURL</div>
+      <div class="field">
+        <label>Paste cURL command <span class="hint-inline">auto-parses all fields</span></label>
+        <textarea class="textarea curl" id="curlInput" placeholder="curl -X POST 'https://api.example.com/v1/login' \
+  -H 'Authorization: Bearer eyJhbG...' \
+  -H 'Content-Type: application/json' \
+  -d '{&quot;email&quot;:&quot;test@test.com&quot;}'"></textarea>
+      </div>
+      <button class="btn-parse" id="parseCurlBtn">⚡ Parse & import</button>
+      <div class="hint">Supports <code>-X, -H, -d, --data, --header, --request</code>, multi-line with backslash, and single/double quoting. After parsing, fields populate on the Manual tab.</div>
     </div>
 
+    <!-- ADVANCED TAB -->
+    <div class="tab-panel" data-panel="advanced">
+      <div class="section-title">Assertions</div>
+      <div class="hint" style="margin-bottom: 10px">Mark a response as failed if any rule doesn't match.</div>
+      <div id="assertionList"></div>
+      <button class="btn-ghost" id="addAssertionBtn" style="width:100%">+ Add assertion</button>
+
+      <div class="section-title" style="margin-top:20px">Options</div>
+      <div class="check-row">
+        <input type="checkbox" id="optThinkTime" checked />
+        <label for="optThinkTime">Realistic think-time</label>
+        <span class="cr-hint">10–50ms jitter</span>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="optFollowRedirect" checked />
+        <label for="optFollowRedirect">Follow redirects</label>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="optKeepCookies" />
+        <label for="optKeepCookies">Send cookies</label>
+        <span class="cr-hint">with-credentials</span>
+      </div>
+      <div class="check-row">
+        <input type="checkbox" id="optWarmup" />
+        <label for="optWarmup">Warm-up phase</label>
+        <span class="cr-hint">3s solo VU</span>
+      </div>
+
+      <div class="section-title" style="margin-top:20px">SLO Targets <span style="color:var(--text-faint);font-weight:400;letter-spacing:0">(optional)</span></div>
+      <div class="row-2">
+        <div class="field">
+          <label>p95 max (ms)</label>
+          <input type="number" class="input" id="sloP95" placeholder="500" />
+        </div>
+        <div class="field">
+          <label>Error rate max (%)</label>
+          <input type="number" class="input" id="sloErr" placeholder="1" step="0.1" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ALWAYS VISIBLE -->
     <div class="section-title" style="margin-top:24px">Test profile</div>
     <div class="test-types" id="testTypes">
       <div class="test-card active" data-type="load">
         <div class="test-card-name">Load</div>
-        <div class="test-card-desc">Steady traffic at target RPS</div>
+        <div class="test-card-desc">Steady traffic at target</div>
       </div>
       <div class="test-card" data-type="stress">
         <div class="test-card-name">Stress</div>
-        <div class="test-card-desc">Ramp up to find breaking point</div>
+        <div class="test-card-desc">Ramp to find limits</div>
       </div>
       <div class="test-card" data-type="spike">
         <div class="test-card-name">Spike</div>
-        <div class="test-card-desc">Sudden burst of traffic</div>
+        <div class="test-card-desc">Sudden burst</div>
       </div>
       <div class="test-card" data-type="soak">
         <div class="test-card-name">Soak</div>
-        <div class="test-card-desc">Sustained long-duration run</div>
+        <div class="test-card-desc">Long duration</div>
       </div>
     </div>
 
@@ -728,7 +859,7 @@ Content-Type: application/json"></textarea>
       </div>
       <div class="dash-actions">
         <button class="btn-ghost" id="clearBtn">Clear</button>
-        <button class="btn-ghost" id="reportBtn" disabled>View report</button>
+        <button class="btn-ghost" id="reportBtn" disabled>📊 View report</button>
       </div>
     </div>
 
@@ -823,10 +954,21 @@ Content-Type: application/json"></textarea>
   </section>
 </main>
 
+<footer>
+  <div>
+    Built by <span class="credit"><strong>Gaurav Patil</strong></span> · LoadForge v2.0
+  </div>
+  <div>
+    <span id="footerDate"></span>
+  </div>
+</footer>
+
 <!-- REPORT MODAL -->
 <div class="modal" id="reportModal">
-  <div class="report" id="reportContent"></div>
+  <div class="report-doc" id="reportDoc"></div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 /* ========== STATE ========== */
@@ -839,20 +981,47 @@ const state = {
   totalReqs: 0,
   successReqs: 0,
   failReqs: 0,
-  latencies: [],           // all latencies (for percentiles)
-  timeSeries: [],          // { t, p50, p95, p99, rps, errRate }
-  statusCodes: {},         // { '200': n, '500': n, 'ERROR': n }
-  recentLog: [],           // last N request entries
-  rpsWindow: [],           // timestamps of reqs in last 1s window for live RPS
+  latencies: [],
+  timeSeries: [],
+  statusCodes: {},
+  recentLog: [],
+  rpsWindow: [],
   activeVus: 0,
   abortControllers: [],
   config: null,
+  assertionFails: 0,
+  firstByteTimes: [],
+  bytesReceived: 0,
+  errors: {},
 };
 
-/* ========== DOM ========== */
 const $ = id => document.getElementById(id);
 const statusDot = $('statusDot');
 const statusText = $('statusText');
+
+/* footer date */
+function formatDate(d) {
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+$('footerDate').textContent = formatDate(new Date());
+
+/* toast */
+function toast(msg, isErr=false) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ========== TAB SWITCHING ========== */
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector(`.tab-panel[data-panel="${t.dataset.tab}"]`).classList.add('active');
+  };
+});
 
 /* ========== METHOD SELECTOR ========== */
 document.querySelectorAll('.method-btn').forEach(b => {
@@ -873,7 +1042,6 @@ document.querySelectorAll('.test-card').forEach(c => {
     updateHint();
   };
 });
-
 function updateHint() {
   const c = +$('concurrency').value, d = +$('duration').value, r = +$('rampup').value;
   const hints = {
@@ -886,6 +1054,143 @@ function updateHint() {
 }
 ['concurrency','duration','rampup'].forEach(id => $(id).addEventListener('input', updateHint));
 
+/* ========== CURL PARSER ========== */
+function parseCurl(input) {
+  let s = input.trim();
+  if (!s) throw new Error('Empty input');
+  // remove line continuations
+  s = s.replace(/\\\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+  // strip leading "curl"
+  s = s.replace(/^\$\s*/, '').replace(/^curl\s+/i, '');
+
+  // tokenize respecting quotes
+  const tokens = [];
+  let cur = '', quote = null, i = 0;
+  while (i < s.length) {
+    const ch = s[i];
+    if (quote) {
+      if (ch === '\\' && i+1 < s.length) { cur += s[i+1]; i += 2; continue; }
+      if (ch === quote) { quote = null; i++; continue; }
+      cur += ch; i++;
+    } else {
+      if (ch === "'" || ch === '"') { quote = ch; i++; continue; }
+      if (ch === ' ') { if (cur) { tokens.push(cur); cur = ''; } i++; continue; }
+      if (ch === '\\' && s[i+1] === ' ') { cur += ' '; i += 2; continue; }
+      cur += ch; i++;
+    }
+  }
+  if (cur) tokens.push(cur);
+
+  const result = { method: 'GET', url: '', headers: {}, body: '' };
+  for (let j = 0; j < tokens.length; j++) {
+    const t = tokens[j];
+    if (t === '-X' || t === '--request') {
+      result.method = (tokens[++j] || 'GET').toUpperCase();
+    } else if (t === '-H' || t === '--header') {
+      const hv = tokens[++j] || '';
+      const idx = hv.indexOf(':');
+      if (idx > 0) result.headers[hv.slice(0,idx).trim()] = hv.slice(idx+1).trim();
+    } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-binary' || t === '--data-urlencode') {
+      result.body = tokens[++j] || '';
+      if (result.method === 'GET') result.method = 'POST';
+    } else if (t === '-u' || t === '--user') {
+      const creds = tokens[++j] || '';
+      result.headers['Authorization'] = 'Basic ' + btoa(creds);
+    } else if (t === '-b' || t === '--cookie') {
+      result.headers['Cookie'] = tokens[++j] || '';
+    } else if (t === '-A' || t === '--user-agent') {
+      result.headers['User-Agent'] = tokens[++j] || '';
+    } else if (t === '-e' || t === '--referer') {
+      result.headers['Referer'] = tokens[++j] || '';
+    } else if (t.startsWith('-')) {
+      // skip unknown flag or its value
+      if (!['--compressed','--insecure','-k','--silent','-s','-v','--verbose','-i','--include','-L','--location','-f','--fail','-o','-O'].includes(t)) {
+        if (j+1 < tokens.length && !tokens[j+1].startsWith('-')) j++;
+      }
+    } else if (!result.url) {
+      result.url = t;
+    }
+  }
+  if (!result.url) throw new Error('No URL found in cURL');
+  return result;
+}
+
+$('parseCurlBtn').onclick = () => {
+  try {
+    const parsed = parseCurl($('curlInput').value);
+    // populate manual tab
+    state.method = parsed.method;
+    document.querySelectorAll('.method-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.method === parsed.method);
+    });
+    $('urlInput').value = parsed.url;
+    $('headersInput').value = Object.entries(parsed.headers).map(([k,v]) => `${k}: ${v}`).join('\n');
+    $('bodyInput').value = parsed.body || '';
+    $('bodyField').style.display = ['POST','PUT','PATCH'].includes(parsed.method) ? 'block' : 'none';
+
+    // switch to manual tab
+    document.querySelector('.tab[data-tab="manual"]').click();
+    toast('cURL parsed successfully — fields populated');
+  } catch (e) {
+    toast('Parse failed: ' + e.message, true);
+  }
+};
+
+/* ========== ASSERTIONS ========== */
+let assertionId = 0;
+function addAssertion(type='status_equals', value='200') {
+  const id = ++assertionId;
+  const div = document.createElement('div');
+  div.className = 'assertion-item';
+  div.dataset.id = id;
+  div.innerHTML = `
+    <select class="input assert-type">
+      <option value="status_equals">Status equals</option>
+      <option value="status_lt">Status less than</option>
+      <option value="body_contains">Body contains</option>
+      <option value="body_json_has">Body JSON has key</option>
+      <option value="latency_under">Latency under (ms)</option>
+    </select>
+    <input type="text" class="input assert-val" placeholder="value" value="${value}" />
+    <button class="rm-btn" onclick="this.parentElement.remove()">×</button>
+  `;
+  div.querySelector('.assert-type').value = type;
+  $('assertionList').appendChild(div);
+}
+$('addAssertionBtn').onclick = () => addAssertion();
+
+function getAssertions() {
+  return [...document.querySelectorAll('.assertion-item')].map(el => ({
+    type: el.querySelector('.assert-type').value,
+    value: el.querySelector('.assert-val').value,
+  })).filter(a => a.value);
+}
+
+async function checkAssertions(asserts, res, latency, bodyText) {
+  for (const a of asserts) {
+    if (a.type === 'status_equals') {
+      if (String(res.status) !== String(a.value).trim()) return `Status ${res.status} ≠ ${a.value}`;
+    } else if (a.type === 'status_lt') {
+      if (res.status >= +a.value) return `Status ${res.status} ≥ ${a.value}`;
+    } else if (a.type === 'body_contains') {
+      if (!bodyText.includes(a.value)) return `Body missing "${a.value}"`;
+    } else if (a.type === 'body_json_has') {
+      try {
+        const j = JSON.parse(bodyText);
+        const path = a.value.split('.');
+        let cur = j;
+        for (const p of path) {
+          if (cur == null || !(p in cur)) return `JSON missing "${a.value}"`;
+          cur = cur[p];
+        }
+      } catch (_) { return `Body not JSON (expected key "${a.value}")`; }
+    } else if (a.type === 'latency_under') {
+      if (latency > +a.value) return `Latency ${Math.round(latency)}ms > ${a.value}ms`;
+    }
+  }
+  return null;
+}
+
 /* ========== UTILITIES ========== */
 function percentile(arr, p) {
   if (!arr.length) return null;
@@ -894,8 +1199,18 @@ function percentile(arr, p) {
   return sorted[Math.max(0, Math.min(sorted.length-1, idx))];
 }
 function mean(arr) { return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+function stddev(arr) {
+  if (arr.length < 2) return 0;
+  const m = mean(arr);
+  return Math.sqrt(arr.reduce((s,v) => s + (v-m)**2, 0) / arr.length);
+}
 function fmtMs(ms) { if (ms == null) return '—'; return ms < 10 ? ms.toFixed(1) : Math.round(ms).toString(); }
-function fmtNum(n) { return n.toLocaleString(); }
+function fmtNum(n) { return (n ?? 0).toLocaleString(); }
+function fmtBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
 function timeStr(d=new Date()) { return d.toTimeString().slice(0,8); }
 
 function parseHeaders(txt) {
@@ -916,9 +1231,9 @@ class LineChart {
   constructor(canvas, opts={}) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.series = opts.series || [];   // [{key, color}]
+    this.series = opts.series || [];
     this.maxPoints = 120;
-    this.data = [];                    // {t, values: {key:val}}
+    this.data = [];
     this.resize();
     window.addEventListener('resize', () => this.resize());
   }
@@ -944,7 +1259,6 @@ class LineChart {
     const pw = w - pad.l - pad.r;
     const ph = h - pad.t - pad.b;
 
-    // find max
     let maxV = 0;
     this.data.forEach(d => this.series.forEach(s => {
       if (d.values[s.key] != null && d.values[s.key] > maxV) maxV = d.values[s.key];
@@ -952,7 +1266,6 @@ class LineChart {
     if (maxV === 0) maxV = 1;
     maxV = maxV * 1.15;
 
-    // gridlines
     ctx.strokeStyle = '#23232a';
     ctx.fillStyle = '#55555e';
     ctx.font = '10px JetBrains Mono';
@@ -988,7 +1301,6 @@ class LineChart {
       });
       ctx.stroke();
 
-      // fill gradient
       const lastIdx = this.data.findLastIndex(d => d.values[s.key] != null);
       if (lastIdx > 0) {
         const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + ph);
@@ -1012,7 +1324,6 @@ class LineChart {
       }
     });
 
-    // x axis time labels
     ctx.fillStyle = '#55555e';
     ctx.textAlign = 'center';
     ctx.fillText('0s', pad.l, h - 6);
@@ -1094,7 +1405,6 @@ class Histogram {
       ctx.fillRect(x + 1, y, Math.max(1, bw - 2), barH);
     });
 
-    // x labels
     ctx.fillStyle = '#55555e';
     ctx.textAlign = 'center';
     if (this.labels.length) {
@@ -1125,14 +1435,10 @@ function updateKPIs() {
   $('kpiErrRate').textContent = errRate.toFixed(1);
   $('kpiVus').textContent = state.activeVus;
 
-  const p50 = percentile(state.latencies, 50);
-  const p95 = percentile(state.latencies, 95);
-  const p99 = percentile(state.latencies, 99);
-  $('kpiP50').textContent = fmtMs(p50);
-  $('kpiP95').textContent = fmtMs(p95);
-  $('kpiP99').textContent = fmtMs(p99);
+  $('kpiP50').textContent = fmtMs(percentile(state.latencies, 50));
+  $('kpiP95').textContent = fmtMs(percentile(state.latencies, 95));
+  $('kpiP99').textContent = fmtMs(percentile(state.latencies, 99));
 
-  // current RPS: count in last 1000ms
   const now = performance.now();
   state.rpsWindow = state.rpsWindow.filter(t => now - t < 1000);
   $('kpiRps').textContent = state.rpsWindow.length;
@@ -1167,12 +1473,9 @@ function addLog(entry) {
   state.recentLog.push(entry);
   if (state.recentLog.length > 40) state.recentLog.shift();
   const logEl = $('requestLog');
-  let cls = 'ok';
-  if (entry.status === 'ERROR' || (+entry.status >= 500)) cls = 'err';
-  else if (+entry.status >= 400) cls = 'warn';
   logEl.innerHTML = state.recentLog.slice().reverse().map(e => {
     let c = 'ok';
-    if (e.status === 'ERROR' || +e.status >= 500) c = 'err';
+    if (e.status === 'ERROR' || e.status === 'TIMEOUT' || +e.status >= 500) c = 'err';
     else if (+e.status >= 400) c = 'warn';
     return `<div class="log-line ${c}">
       <span class="log-time">${e.time}</span>
@@ -1191,29 +1494,45 @@ async function runRequest(cfg) {
   const timeout = setTimeout(() => controller.abort(), cfg.timeout);
 
   const start = performance.now();
-  let status = 'ERROR', ok = false, latency = 0, errMsg = null;
+  let status = 'ERROR', ok = false, latency = 0, bodyText = '';
+  let resObj = null;
   try {
     const opts = {
       method: cfg.method,
       headers: cfg.headers,
       signal: controller.signal,
       mode: 'cors',
+      redirect: cfg.followRedirect ? 'follow' : 'manual',
+      credentials: cfg.keepCookies ? 'include' : 'omit',
     };
     if (['POST','PUT','PATCH'].includes(cfg.method) && cfg.body) {
       opts.body = cfg.body;
     }
     const res = await fetch(cfg.url, opts);
-    latency = performance.now() - start;
+    resObj = res;
     status = String(res.status);
     ok = res.ok;
-    // drain body so we measure real end-to-end
-    await res.text().catch(()=>{});
+    bodyText = await res.text().catch(()=>'');
+    latency = performance.now() - start;
+    state.bytesReceived += bodyText.length;
   } catch (e) {
     latency = performance.now() - start;
-    status = e.name === 'AbortError' ? 'TIMEOUT' : 'ERROR';
-    errMsg = e.message;
+    if (e.name === 'AbortError') { status = 'TIMEOUT'; }
+    else { status = 'ERROR'; }
+    const msg = e.message || 'error';
+    state.errors[msg] = (state.errors[msg] || 0) + 1;
   } finally {
     clearTimeout(timeout);
+  }
+
+  // assertions
+  if (ok && cfg.assertions.length && resObj) {
+    const failMsg = await checkAssertions(cfg.assertions, resObj, latency, bodyText);
+    if (failMsg) {
+      ok = false;
+      state.assertionFails++;
+      state.errors['Assertion: ' + failMsg] = (state.errors['Assertion: ' + failMsg] || 0) + 1;
+    }
   }
 
   state.totalReqs++;
@@ -1236,8 +1555,9 @@ async function virtualUser(cfg, vuId, endTime) {
   try {
     while (state.running && performance.now() < endTime) {
       await runRequest(cfg);
-      // tiny jitter so not perfectly synchronized
-      await new Promise(r => setTimeout(r, 10 + Math.random() * 40));
+      if (cfg.thinkTime) {
+        await new Promise(r => setTimeout(r, 10 + Math.random() * 40));
+      }
     }
   } finally {
     state.activeVus--;
@@ -1245,9 +1565,10 @@ async function virtualUser(cfg, vuId, endTime) {
 }
 
 async function startTest() {
-  // gather config
   const url = $('urlInput').value.trim();
-  if (!url) { alert('Enter a URL'); return; }
+  if (!url) { toast('Enter a URL', true); return; }
+  if (!/^https?:\/\//i.test(url)) { toast('URL must start with http:// or https://', true); return; }
+
   const cfg = {
     method: state.method,
     url,
@@ -1258,21 +1579,29 @@ async function startTest() {
     duration: +$('duration').value,
     rampup: +$('rampup').value,
     testType: state.testType,
+    assertions: getAssertions(),
+    thinkTime: $('optThinkTime').checked,
+    followRedirect: $('optFollowRedirect').checked,
+    keepCookies: $('optKeepCookies').checked,
+    warmup: $('optWarmup').checked,
+    sloP95: +$('sloP95').value || null,
+    sloErr: +$('sloErr').value || null,
+    startedAt: new Date().toISOString(),
   };
   state.config = cfg;
 
-  // reset state
+  // reset
   Object.assign(state, {
     running: true, startTime: performance.now(), endTime: 0,
     totalReqs: 0, successReqs: 0, failReqs: 0,
     latencies: [], timeSeries: [], statusCodes: {}, recentLog: [],
     rpsWindow: [], activeVus: 0, abortControllers: [],
+    assertionFails: 0, bytesReceived: 0, errors: {},
   });
   latencyChart.clear(); rpsChart.clear(); histChart.clear();
   updateKPIs(); updateStatusBars();
   $('requestLog').innerHTML = '';
 
-  // update UI
   statusDot.className = 'status-dot running';
   statusText.textContent = 'Running';
   $('runBtn').textContent = '■ Stop test';
@@ -1280,26 +1609,30 @@ async function startTest() {
   $('reportBtn').disabled = true;
   $('dashSubtitle').textContent = `${cfg.testType.toUpperCase()} · ${cfg.concurrency} VUs · ${cfg.duration}s · ${cfg.method} ${cfg.url}`;
 
+  // warmup
+  if (cfg.warmup) {
+    toast('Warming up…');
+    for (let i = 0; i < 3; i++) await runRequest(cfg);
+    state.totalReqs = 0; state.successReqs = 0; state.failReqs = 0;
+    state.latencies = []; state.statusCodes = {}; state.recentLog = [];
+    state.startTime = performance.now();
+  }
+
   const endTime = performance.now() + cfg.duration * 1000;
   state.endTime = endTime;
 
-  // test-type scheduling
   if (cfg.testType === 'spike') {
-    // idle baseline for 3s, then all VUs at once
     setTimeout(() => {
       if (!state.running) return;
       for (let i = 0; i < cfg.concurrency; i++) virtualUser(cfg, i, endTime);
     }, 3000);
-    // 1-2 baseline VUs from start
     virtualUser(cfg, -1, endTime);
   } else if (cfg.testType === 'stress') {
-    // ramp from 1 to concurrency linearly over `duration`
     const stepMs = (cfg.duration * 1000) / cfg.concurrency;
     for (let i = 0; i < cfg.concurrency; i++) {
       setTimeout(() => { if (state.running) virtualUser(cfg, i, endTime); }, i * stepMs);
     }
   } else {
-    // load & soak: ramp-up then hold
     const rampMs = cfg.rampup * 1000;
     const stepMs = cfg.concurrency > 0 ? rampMs / cfg.concurrency : 0;
     for (let i = 0; i < cfg.concurrency; i++) {
@@ -1307,7 +1640,6 @@ async function startTest() {
     }
   }
 
-  // auto stop after duration
   setTimeout(() => { if (state.running) stopTest(false); }, cfg.duration * 1000 + 500);
 }
 
@@ -1323,21 +1655,19 @@ function stopTest(aborted=true) {
   $('runBtn').classList.remove('stop');
   $('reportBtn').disabled = false;
 
-  // final chart refresh
   histChart.update(state.latencies);
   updateKPIs(); updateStatusBars();
+  toast(aborted ? 'Test aborted' : 'Test complete — view the report');
 }
 
 /* ========== TELEMETRY LOOP ========== */
 setInterval(() => {
   updateKPIs();
-
   if (state.running) {
     const elapsedSec = Math.floor((performance.now() - state.startTime) / 1000);
     const p50 = percentile(state.latencies, 50);
     const p95 = percentile(state.latencies, 95);
     const p99 = percentile(state.latencies, 99);
-    // RPS over last 1s
     const rps = state.rpsWindow.length;
 
     latencyChart.push({ t: elapsedSec, values: { p50, p95, p99 } });
@@ -1350,119 +1680,528 @@ setInterval(() => {
   }
 }, 1000);
 
-/* ========== REPORT ========== */
+/* ========== PROFESSIONAL REPORT ========== */
 function buildReport() {
   const cfg = state.config || {};
-  const dur = ((state.endTime - state.startTime) / 1000).toFixed(1);
+  const durationSec = (state.endTime - state.startTime) / 1000;
   const p50 = percentile(state.latencies, 50);
+  const p75 = percentile(state.latencies, 75);
   const p90 = percentile(state.latencies, 90);
   const p95 = percentile(state.latencies, 95);
   const p99 = percentile(state.latencies, 99);
   const avg = mean(state.latencies);
+  const sd = stddev(state.latencies);
   const minL = state.latencies.length ? Math.min(...state.latencies) : 0;
   const maxL = state.latencies.length ? Math.max(...state.latencies) : 0;
-  const avgRps = state.totalReqs / Math.max(1, dur);
+  const avgRps = durationSec > 0 ? state.totalReqs / durationSec : 0;
+  const peakRps = state.timeSeries.length ? Math.max(...state.timeSeries.map(t => t.rps)) : 0;
   const errRate = state.totalReqs ? (state.failReqs / state.totalReqs * 100) : 0;
 
-  // verdict (industry-leaning SLO thresholds)
-  let verdict = 'pass', vTitle = 'Healthy', vText = '';
-  const warnings = [];
-  if (errRate > 5) { verdict = 'fail'; vTitle = 'Failed'; warnings.push(`Error rate of ${errRate.toFixed(2)}% exceeds 5% SLO budget.`); }
-  else if (errRate > 1) { verdict = verdict === 'pass' ? 'warn' : verdict; vTitle = verdict === 'fail' ? vTitle : 'Degraded'; warnings.push(`Error rate of ${errRate.toFixed(2)}% exceeds 1% target.`); }
-  if (p95 != null && p95 > 1000) { verdict = 'fail'; vTitle = 'Failed'; warnings.push(`p95 latency of ${fmtMs(p95)}ms exceeds 1000ms threshold — users will notice.`); }
-  else if (p95 != null && p95 > 500) { if (verdict === 'pass') { verdict = 'warn'; vTitle = 'Degraded'; } warnings.push(`p95 latency of ${fmtMs(p95)}ms exceeds 500ms — Google's "good" RUM threshold.`); }
-  if (p99 != null && p99 > 3000) { if (verdict === 'pass') { verdict = 'warn'; vTitle = 'Degraded'; } warnings.push(`p99 latency of ${fmtMs(p99)}ms — tail latency is poor.`); }
-  if (state.statusCodes['ERROR'] || state.statusCodes['TIMEOUT']) {
-    warnings.push(`${(state.statusCodes['ERROR']||0) + (state.statusCodes['TIMEOUT']||0)} network/timeout errors — could be CORS, timeouts, or connection limits.`);
+  // categorize status codes
+  let s2xx=0, s3xx=0, s4xx=0, s5xx=0, sOther=0;
+  Object.entries(state.statusCodes).forEach(([c,v]) => {
+    if (/^2/.test(c)) s2xx += v;
+    else if (/^3/.test(c)) s3xx += v;
+    else if (/^4/.test(c)) s4xx += v;
+    else if (/^5/.test(c)) s5xx += v;
+    else sOther += v;
+  });
+
+  // verdict logic
+  const sloP95 = cfg.sloP95 || 500;
+  const sloErr = cfg.sloErr || 1;
+  let verdict = 'pass', vTitle = 'Test Passed — API is Healthy', vIcon = '✓';
+  let vSummary = `Your API handled ${fmtNum(state.totalReqs)} requests over ${durationSec.toFixed(1)} seconds without violating industry SLO targets. It delivered consistent performance under the configured load.`;
+  const reasons = [];
+
+  if (errRate > Math.max(5, sloErr * 2)) {
+    verdict = 'fail'; vTitle = 'Test Failed — API is Unstable'; vIcon = '✕';
+    reasons.push(`error rate of ${errRate.toFixed(2)}% is critically high`);
+  } else if (errRate > sloErr) {
+    verdict = 'warn'; vTitle = 'Test Warning — API is Degraded'; vIcon = '!';
+    reasons.push(`error rate of ${errRate.toFixed(2)}% exceeds the ${sloErr}% target`);
   }
-  if (verdict === 'pass') vText = 'All indicators within industry-standard SLO targets. API handled the configured load without significant degradation.';
-  else vText = warnings.join(' ');
+  if (p95 != null && p95 > sloP95 * 2) {
+    verdict = 'fail'; vTitle = 'Test Failed — API is Unstable'; vIcon = '✕';
+    reasons.push(`p95 latency of ${fmtMs(p95)}ms is critically slow`);
+  } else if (p95 != null && p95 > sloP95) {
+    if (verdict === 'pass') { verdict = 'warn'; vTitle = 'Test Warning — API is Degraded'; vIcon = '!'; }
+    reasons.push(`p95 latency of ${fmtMs(p95)}ms exceeds the ${sloP95}ms target`);
+  }
+  if (s5xx > 0) {
+    if (verdict !== 'fail') { verdict = 'warn'; vTitle = 'Test Warning — Server Errors Detected'; vIcon = '!'; }
+    reasons.push(`${s5xx} server errors (5xx) occurred`);
+  }
+  if (reasons.length) {
+    vSummary = `The API did not meet all performance targets. Problems detected: ${reasons.join('; ')}. See insights and recommendations below for fixes.`;
+  }
+
+  // build insights (developer-focused)
+  const insights = [];
+
+  // stability
+  const stabilityRatio = avg > 0 ? (sd / avg) : 0;
+  if (stabilityRatio < 0.3 && state.latencies.length > 10) {
+    insights.push({ type: 'good', title: 'Very stable response times',
+      body: `Standard deviation is only ${fmtMs(sd)}ms vs ${fmtMs(avg)}ms average — responses are highly consistent, which is excellent for user experience.` });
+  } else if (stabilityRatio > 0.8 && state.latencies.length > 10) {
+    insights.push({ type: 'bad', title: 'High response-time variance',
+      body: `Standard deviation (${fmtMs(sd)}ms) is nearly as large as the average (${fmtMs(avg)}ms). This unpredictability frustrates users — usually caused by GC pauses, cold database connections, or noisy neighbors.` });
+  }
+
+  // tail latency
+  if (p50 != null && p99 != null && p99 > p50 * 5 && p50 > 0) {
+    insights.push({ type: 'warn', title: 'Tail latency problem',
+      body: `p99 (${fmtMs(p99)}ms) is ${(p99/p50).toFixed(1)}× slower than p50 (${fmtMs(p50)}ms). The slowest 1% of users wait far longer than typical. Investigate N+1 queries, cache misses, or connection pool exhaustion.` });
+  }
+
+  // error dominance
+  if (s5xx > s4xx && s5xx > 5) {
+    insights.push({ type: 'bad', title: 'Server errors dominate',
+      body: `${s5xx} responses returned 5xx status codes. This points to crashes, timeouts, or resource exhaustion on your server — not client issues.` });
+  } else if (s4xx > s5xx && s4xx > s2xx * 0.1) {
+    insights.push({ type: 'warn', title: 'High rate of client errors',
+      body: `${s4xx} responses returned 4xx status codes. Check authentication tokens, validation rules, or rate-limit headers — the server is rejecting requests on purpose.` });
+  }
+
+  // throughput ceiling
+  if (cfg.testType === 'stress' && state.timeSeries.length > 5) {
+    const firstHalf = state.timeSeries.slice(0, Math.floor(state.timeSeries.length/2));
+    const secondHalf = state.timeSeries.slice(Math.floor(state.timeSeries.length/2));
+    const rpsFirst = mean(firstHalf.map(t => t.rps));
+    const rpsSecond = mean(secondHalf.map(t => t.rps));
+    if (rpsSecond < rpsFirst * 0.9 && rpsFirst > 0) {
+      insights.push({ type: 'warn', title: 'Throughput plateau detected',
+        body: `RPS dropped from ${rpsFirst.toFixed(1)} (early) to ${rpsSecond.toFixed(1)} (late) as load increased. You likely hit a bottleneck — database, CPU, or connection pool. This is the breaking point.` });
+    }
+  }
+
+  // timeouts
+  if (state.statusCodes['TIMEOUT']) {
+    insights.push({ type: 'bad', title: `${state.statusCodes['TIMEOUT']} timeouts occurred`,
+      body: `Requests took longer than ${cfg.timeout}ms. Either the API is too slow under load, or your timeout is set too aggressively for normal traffic.` });
+  }
+
+  // network errors (CORS is common)
+  if (state.statusCodes['ERROR']) {
+    insights.push({ type: 'bad', title: `${state.statusCodes['ERROR']} network errors`,
+      body: `These failed before getting a response. Most common causes in browser testing: CORS blocking, DNS failures, or the server refusing connections under load.` });
+  }
+
+  // assertions
+  if (state.assertionFails > 0) {
+    insights.push({ type: 'warn', title: `${state.assertionFails} assertion failures`,
+      body: `Responses returned 2xx but didn't match your expected content. The API is up but returning wrong data under load — often caused by cache inconsistency or race conditions.` });
+  }
+
+  // success
+  if (verdict === 'pass' && state.latencies.length > 0) {
+    insights.push({ type: 'good', title: 'Meets industry SLO standards',
+      body: `p95 ≤ ${sloP95}ms and error rate ≤ ${sloErr}%. The API is production-ready at this traffic level. Consider running a stress test next to find the actual ceiling.` });
+  }
+
+  // RECOMMENDATIONS (developer-targeted)
+  const recs = [];
+  if (p95 != null && p95 > 1000) {
+    recs.push({ priority: 'high', title: 'Reduce p95 latency',
+      body: 'Start by profiling the slowest endpoints. Add <code>X-Response-Time</code> middleware to measure server-side time. Common wins: database index on frequently-filtered columns, HTTP caching headers, and reducing payload size with compression.' });
+  }
+  if (p99 > p50 * 5 && p50 > 0) {
+    recs.push({ priority: 'high', title: 'Fix tail latency',
+      body: 'Tail latency hurts real users more than averages. Use <code>Promise.all</code> to parallelize independent calls, pool your database connections, and preload data during app startup to avoid first-request penalties.' });
+  }
+  if (s5xx > 0) {
+    recs.push({ priority: 'high', title: 'Fix server errors under load',
+      body: 'Add logging for every 5xx with full stack traces. Check memory limits, CPU throttling, and database connection limits. Consider a circuit breaker pattern so one failing downstream doesn\'t cascade.' });
+  }
+  if (stabilityRatio > 0.8) {
+    recs.push({ priority: 'med', title: 'Reduce response-time variance',
+      body: 'Use a connection pool with warm connections. If using Node.js, watch for event-loop blocking from sync operations. For JVM languages, tune garbage collection.' });
+  }
+  if (cfg.testType === 'load' && errRate < 1) {
+    recs.push({ priority: 'low', title: 'Run a stress test next',
+      body: `Your API handled ${cfg.concurrency} users comfortably. Run a <strong>Stress</strong> test with 3–5× the VUs to find your actual capacity ceiling before production traffic does.` });
+  }
+  if (cfg.testType === 'stress' && errRate > 1) {
+    recs.push({ priority: 'med', title: 'Add horizontal autoscaling',
+      body: 'You found a ceiling. If this API runs on Kubernetes/ECS, configure HPA based on CPU + request rate so it can scale out before errors start.' });
+  }
+  if (!Object.keys(state.statusCodes).some(c => /^2/.test(c))) {
+    recs.push({ priority: 'high', title: 'All requests failed',
+      body: 'Check for CORS issues first — browser testing requires <code>Access-Control-Allow-Origin</code> headers. Try your URL in the browser directly to confirm it\'s reachable.' });
+  }
+
+  // build SVG latency chart for report
+  function svgLineChart(series, points, width=880, height=200) {
+    if (!points.length) return '<div style="padding:40px;text-align:center;color:#888">No time-series data</div>';
+    const pad = { l: 50, r: 20, t: 20, b: 30 };
+    const pw = width - pad.l - pad.r;
+    const ph = height - pad.t - pad.b;
+    let maxV = 0;
+    points.forEach(p => series.forEach(s => { if (p[s.key] != null && p[s.key] > maxV) maxV = p[s.key]; }));
+    maxV = Math.max(1, maxV * 1.15);
+    const n = points.length;
+    const xStep = pw / Math.max(1, n-1);
+
+    let grid = '';
+    for (let i = 0; i <= 4; i++) {
+      const y = pad.t + (ph * i / 4);
+      grid += `<line x1="${pad.l}" y1="${y}" x2="${pad.l+pw}" y2="${y}" stroke="#e0e0d8" stroke-width="1"/>`;
+      grid += `<text x="${pad.l-6}" y="${y+3}" text-anchor="end" font-family="JetBrains Mono" font-size="10" fill="#888">${(maxV*(1-i/4)).toFixed(maxV<10?1:0)}</text>`;
+    }
+
+    let paths = '';
+    series.forEach(s => {
+      let d = '';
+      points.forEach((p, i) => {
+        const v = p[s.key];
+        if (v == null) return;
+        const x = pad.l + i * xStep;
+        const y = pad.t + ph - (v / maxV) * ph;
+        d += (d ? ' L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+      });
+      if (d) paths += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="1.8"/>`;
+    });
+
+    // legend
+    let legend = '';
+    series.forEach((s, i) => {
+      const x = pad.l + i * 70;
+      legend += `<rect x="${x}" y="${height-14}" width="10" height="3" fill="${s.color}"/>`;
+      legend += `<text x="${x+14}" y="${height-10}" font-family="JetBrains Mono" font-size="10" fill="#555">${s.label}</text>`;
+    });
+
+    return `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">
+      ${grid}${paths}${legend}
+    </svg>`;
+  }
+
+  // mini status pie
+  function svgStatusDonut() {
+    const total = s2xx+s3xx+s4xx+s5xx+sOther;
+    if (!total) return '';
+    const segs = [
+      { label: '2xx Success', val: s2xx, color: '#12b76a' },
+      { label: '3xx Redirect', val: s3xx, color: '#5cb8ff' },
+      { label: '4xx Client', val: s4xx, color: '#f79009' },
+      { label: '5xx Server', val: s5xx, color: '#f04438' },
+      { label: 'Network', val: sOther, color: '#b57aff' },
+    ].filter(s => s.val > 0);
+    const cx = 80, cy = 80, r = 60, ir = 40;
+    let angle = -Math.PI/2;
+    let paths = '';
+    segs.forEach(seg => {
+      const a = (seg.val / total) * Math.PI * 2;
+      const x1 = cx + Math.cos(angle) * r;
+      const y1 = cy + Math.sin(angle) * r;
+      const x2 = cx + Math.cos(angle+a) * r;
+      const y2 = cy + Math.sin(angle+a) * r;
+      const xi1 = cx + Math.cos(angle+a) * ir;
+      const yi1 = cy + Math.sin(angle+a) * ir;
+      const xi2 = cx + Math.cos(angle) * ir;
+      const yi2 = cy + Math.sin(angle) * ir;
+      const large = a > Math.PI ? 1 : 0;
+      paths += `<path d="M${x1} ${y1} A${r} ${r} 0 ${large} 1 ${x2} ${y2} L${xi1} ${yi1} A${ir} ${ir} 0 ${large} 0 ${xi2} ${yi2} Z" fill="${seg.color}"/>`;
+      angle += a;
+    });
+    let legend = '';
+    segs.forEach((s, i) => {
+      legend += `<g transform="translate(180, ${20 + i*22})">
+        <rect width="14" height="14" rx="3" fill="${s.color}"/>
+        <text x="22" y="11" font-family="JetBrains Mono" font-size="11" fill="#1a1a1a" font-weight="600">${s.label}</text>
+        <text x="22" y="24" font-family="JetBrains Mono" font-size="10" fill="#888">${fmtNum(s.val)} (${(s.val/total*100).toFixed(1)}%)</text>
+      </g>`;
+    });
+    return `<svg viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;height:auto">
+      ${paths}
+      <text x="${cx}" y="${cy-4}" text-anchor="middle" font-family="JetBrains Mono" font-size="16" font-weight="700" fill="#1a1a1a">${fmtNum(total)}</text>
+      <text x="${cx}" y="${cy+10}" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#888">TOTAL</text>
+      ${legend}
+    </svg>`;
+  }
+
+  const testedAt = new Date(cfg.startedAt || Date.now());
+  const reportId = 'LF-' + testedAt.getTime().toString(36).toUpperCase();
 
   const statusRows = Object.entries(state.statusCodes).sort().map(([c,v]) => {
     const pct = (v/state.totalReqs*100).toFixed(2);
-    return `<tr><td>${c}</td><td>${fmtNum(v)} <span style="color:var(--text-faint)">(${pct}%)</span></td></tr>`;
+    let label = 'Unknown';
+    if (c === 'TIMEOUT') label = 'Request timed out';
+    else if (c === 'ERROR') label = 'Network/CORS error';
+    else if (/^2/.test(c)) label = 'Success';
+    else if (/^3/.test(c)) label = 'Redirect';
+    else if (/^4/.test(c)) label = 'Client error';
+    else if (/^5/.test(c)) label = 'Server error';
+    return `<tr><td>${c}</td><td>${label}</td><td class="num">${fmtNum(v)}</td><td class="num">${pct}%</td></tr>`;
   }).join('');
 
+  const errorRows = Object.entries(state.errors).slice(0, 8).map(([msg, count]) =>
+    `<tr><td style="word-break:break-all">${msg.slice(0,80)}</td><td class="num">${fmtNum(count)}</td></tr>`
+  ).join('');
+
   return `
-    <div class="report-header">
+    <div class="rpt-toolbar">
+      <div>LOADFORGE REPORT · ${reportId}</div>
       <div>
-        <h2>Test <em style="font-style:italic;color:var(--accent)">report</em></h2>
-        <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim);margin-top:6px">
-          ${cfg.testType?.toUpperCase()} · ${cfg.method} ${cfg.url}
+        <button onclick="window.print()">🖨 Print / Save PDF</button>
+        <button onclick="exportJSON()">⬇ JSON</button>
+        <button onclick="exportCSV()">⬇ CSV</button>
+        <button class="primary" onclick="closeReport()">Close ✕</button>
+      </div>
+    </div>
+    <div class="rpt-body">
+
+      <!-- HEADER -->
+      <div class="rpt-head">
+        <div>
+          <div class="brand">
+            <div class="brand-mark">L</div>
+            <div>
+              <div class="brand-name">Load<em>Forge</em></div>
+              <div class="brand-tag">Professional API Load Testing Report</div>
+            </div>
+          </div>
+        </div>
+        <div class="meta">
+          <strong>Report generated</strong>
+          ${formatDate(testedAt)}<br/>
+          ${testedAt.toLocaleTimeString()}
+          <div class="report-id">${reportId}</div>
         </div>
       </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn-ghost" onclick="exportJSON()">Export JSON</button>
-        <button class="btn-ghost" onclick="closeReport()">Close ✕</button>
+
+      <!-- TITLE -->
+      <h1 class="rpt-title">Performance <em>Analysis</em></h1>
+      <div class="rpt-subtitle">${cfg.method} ${cfg.url}</div>
+
+      <!-- VERDICT -->
+      <div class="verdict-banner ${verdict}">
+        <div class="vb-icon">${vIcon}</div>
+        <div>
+          <h3>${vTitle}</h3>
+          <p>${vSummary}</p>
+        </div>
       </div>
-    </div>
 
-    <div class="verdict ${verdict}">
-      <div class="verdict-title">${verdict === 'pass' ? '✓' : verdict === 'warn' ? '⚠' : '✕'} ${vTitle}</div>
-      <div>${vText}</div>
-    </div>
-
-    <div class="report-section" style="margin-top:24px">
-      <h3>Summary</h3>
-      <div class="report-grid">
-        <div class="report-stat"><div class="report-stat-label">Duration</div><div class="report-stat-val">${dur}s</div></div>
-        <div class="report-stat"><div class="report-stat-label">Total requests</div><div class="report-stat-val">${fmtNum(state.totalReqs)}</div></div>
-        <div class="report-stat"><div class="report-stat-label">Avg throughput</div><div class="report-stat-val">${avgRps.toFixed(1)} rps</div></div>
-        <div class="report-stat"><div class="report-stat-label">Error rate</div><div class="report-stat-val" style="color:${errRate>1?'var(--err)':'var(--ok)'}">${errRate.toFixed(2)}%</div></div>
+      <!-- EXECUTIVE SUMMARY -->
+      <div class="rpt-section">
+        <h2>Executive Summary</h2>
+        <div class="section-intro">What happened in plain words — read this first.</div>
+        <div class="exec-summary">
+          <p>We simulated <strong>${cfg.concurrency} concurrent users</strong> hitting your API in a <strong>${cfg.testType}</strong> pattern for <strong>${durationSec.toFixed(1)} seconds</strong>. The API served <strong>${fmtNum(state.totalReqs)} total requests</strong> at an average throughput of <strong>${avgRps.toFixed(1)} requests per second</strong> (peaking at ${peakRps} rps).</p>
+          <p>Half of all responses came back within <strong>${fmtMs(p50)}ms</strong> (typical user experience). The slowest 5% took longer than <strong>${fmtMs(p95)}ms</strong>, and the worst 1% exceeded <strong>${fmtMs(p99)}ms</strong>. <strong>${(100-errRate).toFixed(2)}% of requests succeeded</strong>${errRate > 0 ? `, while <strong>${errRate.toFixed(2)}% failed</strong>` : ''}.</p>
+          ${verdict === 'pass'
+            ? `<p><strong>Bottom line:</strong> the API performed well. You can confidently serve this load in production.</p>`
+            : `<p><strong>Bottom line:</strong> the API has issues that should be addressed before production traffic reaches this level. See the recommendations section for specific fixes.</p>`
+          }
+        </div>
       </div>
-    </div>
 
-    <div class="report-section">
-      <h3>Latency statistics</h3>
-      <table class="report-table">
-        <tr><td>Minimum</td><td>${fmtMs(minL)} ms</td></tr>
-        <tr><td>Average</td><td>${fmtMs(avg)} ms</td></tr>
-        <tr><td>Median (p50)</td><td>${fmtMs(p50)} ms</td></tr>
-        <tr><td>p90</td><td>${fmtMs(p90)} ms</td></tr>
-        <tr><td>p95</td><td>${fmtMs(p95)} ms</td></tr>
-        <tr><td>p99</td><td>${fmtMs(p99)} ms</td></tr>
-        <tr><td>Maximum</td><td>${fmtMs(maxL)} ms</td></tr>
-      </table>
-    </div>
+      <!-- KEY METRICS -->
+      <div class="rpt-section">
+        <h2>Key Metrics</h2>
+        <div class="section-intro">The numbers that matter for production planning.</div>
+        <div class="rpt-stats">
+          <div class="rpt-stat">
+            <div class="rpt-stat-label">Total Requests</div>
+            <div class="rpt-stat-val">${fmtNum(state.totalReqs)}</div>
+            <div class="rpt-stat-sub">sent in ${durationSec.toFixed(1)}s</div>
+          </div>
+          <div class="rpt-stat">
+            <div class="rpt-stat-label">Average Throughput</div>
+            <div class="rpt-stat-val">${avgRps.toFixed(1)}<span class="unit">rps</span></div>
+            <div class="rpt-stat-sub">peak ${peakRps} rps</div>
+          </div>
+          <div class="rpt-stat">
+            <div class="rpt-stat-label">Success Rate</div>
+            <div class="rpt-stat-val ${errRate<1?'ok':errRate<5?'warn':'err'}">${(100-errRate).toFixed(2)}<span class="unit">%</span></div>
+            <div class="rpt-stat-sub">${fmtNum(state.successReqs)} of ${fmtNum(state.totalReqs)}</div>
+          </div>
+          <div class="rpt-stat">
+            <div class="rpt-stat-label">Error Rate</div>
+            <div class="rpt-stat-val ${errRate<1?'ok':errRate<5?'warn':'err'}">${errRate.toFixed(2)}<span class="unit">%</span></div>
+            <div class="rpt-stat-sub">${fmtNum(state.failReqs)} failed</div>
+          </div>
+          <div class="rpt-stat">
+            <div class="rpt-stat-label">Median Latency</div>
+            <div class="rpt-stat-val">${fmtMs(p50)}<span class="unit">ms</span></div>
+            <div class="rpt-stat-sub">p50 · typical user</div>
+          </div>
+          <div class="rpt-stat">
+            <div class="rpt-stat-label">95th Percentile</div>
+            <div class="rpt-stat-val ${p95<sloP95?'ok':p95<sloP95*2?'warn':'err'}">${fmtMs(p95)}<span class="unit">ms</span></div>
+            <div class="rpt-stat-sub">slowest 5% of users</div>
+          </div>
+          <div class="rpt-stat">
+            <div class="rpt-stat-label">99th Percentile</div>
+            <div class="rpt-stat-val ${p99<1000?'ok':p99<3000?'warn':'err'}">${fmtMs(p99)}<span class="unit">ms</span></div>
+            <div class="rpt-stat-sub">worst 1%</div>
+          </div>
+          <div class="rpt-stat">
+            <div class="rpt-stat-label">Data Received</div>
+            <div class="rpt-stat-val">${fmtBytes(state.bytesReceived)}</div>
+            <div class="rpt-stat-sub">payload total</div>
+          </div>
+        </div>
+        <div class="explain">
+          <strong>How to read percentiles:</strong> "p95 = 400ms" means 95% of users got a response in 400ms or less, and 5% waited longer. Percentiles reveal real user experience far better than averages, which hide slow outliers. Industry rule of thumb: if p95 is more than 3× your p50, you have unpredictable performance.
+        </div>
+      </div>
 
-    <div class="report-section">
-      <h3>Status code distribution</h3>
-      <table class="report-table">
-        ${statusRows || '<tr><td colspan="2" style="text-align:center;color:var(--text-faint)">No responses</td></tr>'}
-      </table>
-    </div>
+      <!-- LATENCY ANALYSIS -->
+      <div class="rpt-section">
+        <h2>Latency Analysis</h2>
+        <div class="section-intro">How fast the API responded, and how consistent that speed was.</div>
 
-    <div class="report-section">
-      <h3>Configuration</h3>
-      <table class="report-table">
-        <tr><td>Test type</td><td>${cfg.testType}</td></tr>
-        <tr><td>Virtual users</td><td>${cfg.concurrency}</td></tr>
-        <tr><td>Ramp-up</td><td>${cfg.rampup}s</td></tr>
-        <tr><td>Request timeout</td><td>${cfg.timeout}ms</td></tr>
-        <tr><td>Method</td><td>${cfg.method}</td></tr>
-      </table>
-    </div>
+        <h3>Latency Over Time</h3>
+        <div class="rpt-chart">
+          ${svgLineChart(
+            [{ key: 'p50', color: '#5cb8ff', label: 'p50' }, { key: 'p95', color: '#f79009', label: 'p95' }, { key: 'p99', color: '#f04438', label: 'p99' }],
+            state.timeSeries
+          )}
+        </div>
 
-    <div class="report-section">
-      <h3>Industry SLO reference</h3>
-      <div style="font-family:var(--mono);font-size:11px;color:var(--text-dim);line-height:1.8">
-        • Google SRE: p99 &lt; 1s for interactive APIs, error budget &lt; 1%<br/>
-        • AWS Well-Architected: p95 should be within 2x of p50<br/>
-        • Web Vitals: INP &lt; 200ms is "good", &gt; 500ms is "poor"<br/>
-        • For public APIs: 99.9% availability = 43min downtime/month
+        <h3>Full Latency Breakdown</h3>
+        <table class="rpt-table">
+          <thead><tr><th>Metric</th><th>Value</th><th>What it means</th></tr></thead>
+          <tbody>
+            <tr><td>Minimum</td><td class="num">${fmtMs(minL)} ms</td><td>Fastest response observed</td></tr>
+            <tr><td>Average (mean)</td><td class="num">${fmtMs(avg)} ms</td><td>Arithmetic average — hides outliers</td></tr>
+            <tr><td>Median (p50)</td><td class="num">${fmtMs(p50)} ms</td><td>What a typical user experiences</td></tr>
+            <tr><td>p75</td><td class="num">${fmtMs(p75)} ms</td><td>75% of users are faster than this</td></tr>
+            <tr><td>p90</td><td class="num">${fmtMs(p90)} ms</td><td>Common SLO target</td></tr>
+            <tr><td>p95</td><td class="num">${fmtMs(p95)} ms</td><td>Industry standard SLO target</td></tr>
+            <tr><td>p99</td><td class="num">${fmtMs(p99)} ms</td><td>Worst 1% — your frustrated users</td></tr>
+            <tr><td>Maximum</td><td class="num">${fmtMs(maxL)} ms</td><td>Slowest response observed</td></tr>
+            <tr><td>Std Deviation</td><td class="num">${fmtMs(sd)} ms</td><td>How spread out responses are (lower = more predictable)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- STATUS CODES -->
+      <div class="rpt-section">
+        <h2>Response Breakdown</h2>
+        <div class="section-intro">What the API returned, and what it means.</div>
+        <div class="rpt-chart" style="display:flex;justify-content:center">
+          ${svgStatusDonut()}
+        </div>
+        <h3>Detailed Status Codes</h3>
+        <table class="rpt-table">
+          <thead><tr><th>Code</th><th>Meaning</th><th>Count</th><th>Share</th></tr></thead>
+          <tbody>${statusRows || '<tr><td colspan="4" style="text-align:center;color:#999">No responses</td></tr>'}</tbody>
+        </table>
+        <div class="explain">
+          <strong>Status code guide:</strong> <strong>2xx</strong> = success. <strong>3xx</strong> = redirect (usually fine). <strong>4xx</strong> = client mistake (bad auth, bad input). <strong>5xx</strong> = server failure (crashes, timeouts, overload). <strong>Network/Timeout</strong> = request never reached the server or didn't finish in time.
+        </div>
+      </div>
+
+      <!-- INSIGHTS -->
+      <div class="rpt-section">
+        <h2>Insights</h2>
+        <div class="section-intro">Patterns we detected in your data — what the numbers actually reveal.</div>
+        <div class="insight-list">
+          ${insights.length ? insights.map(i => `
+            <div class="insight ${i.type === 'good' ? 'good' : i.type === 'bad' ? 'bad' : i.type === 'warn' ? 'warn' : 'info'}">
+              <div class="ins-icon">${i.type === 'good' ? '✓' : i.type === 'bad' ? '✕' : '!'}</div>
+              <div class="ins-body">
+                <h4>${i.title}</h4>
+                <p>${i.body}</p>
+              </div>
+            </div>
+          `).join('') : '<div style="color:#888;font-style:italic">No notable patterns detected.</div>'}
+        </div>
+      </div>
+
+      <!-- RECOMMENDATIONS -->
+      ${recs.length ? `
+      <div class="rpt-section">
+        <h2>Developer Recommendations</h2>
+        <div class="section-intro">Concrete actions sorted by priority. Start from the top.</div>
+        <div class="recs">
+          ${recs.map(r => `
+            <div class="rec">
+              <div class="rec-title">
+                <span class="rec-priority ${r.priority}">${r.priority} priority</span>
+                ${r.title}
+              </div>
+              <div class="rec-body">${r.body}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : ''}
+
+      <!-- ERRORS -->
+      ${errorRows ? `
+      <div class="rpt-section">
+        <h2>Error Details</h2>
+        <div class="section-intro">Specific errors observed during the test.</div>
+        <table class="rpt-table">
+          <thead><tr><th>Error</th><th>Occurrences</th></tr></thead>
+          <tbody>${errorRows}</tbody>
+        </table>
+      </div>` : ''}
+
+      <!-- TEST CONFIG -->
+      <div class="rpt-section">
+        <h2>Test Configuration</h2>
+        <div class="section-intro">Exact parameters used — reproducible.</div>
+        <table class="rpt-table">
+          <tbody>
+            <tr><td>Test type</td><td class="num" style="text-align:left">${cfg.testType.toUpperCase()}</td></tr>
+            <tr><td>HTTP method</td><td class="num" style="text-align:left">${cfg.method}</td></tr>
+            <tr><td>Target URL</td><td class="num" style="text-align:left;word-break:break-all">${cfg.url}</td></tr>
+            <tr><td>Virtual users</td><td class="num">${cfg.concurrency}</td></tr>
+            <tr><td>Test duration</td><td class="num">${cfg.duration}s</td></tr>
+            <tr><td>Ramp-up period</td><td class="num">${cfg.rampup}s</td></tr>
+            <tr><td>Request timeout</td><td class="num">${cfg.timeout}ms</td></tr>
+            <tr><td>Custom headers</td><td class="num">${Object.keys(cfg.headers).length}</td></tr>
+            <tr><td>Assertions</td><td class="num">${cfg.assertions.length}</td></tr>
+            <tr><td>Follow redirects</td><td class="num" style="text-align:left">${cfg.followRedirect ? 'Yes' : 'No'}</td></tr>
+            <tr><td>Started at</td><td class="num" style="text-align:left">${testedAt.toLocaleString()}</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SLO REFERENCE -->
+      <div class="rpt-section">
+        <h2>Industry Standards Reference</h2>
+        <div class="section-intro">Thresholds used to judge your API, from published engineering standards.</div>
+        <table class="rpt-table">
+          <thead><tr><th>Source</th><th>Metric</th><th>Target</th></tr></thead>
+          <tbody>
+            <tr><td>Google SRE Handbook</td><td>Error budget</td><td class="num" style="text-align:left">≤ 1% per month</td></tr>
+            <tr><td>Google SRE Handbook</td><td>p99 latency (interactive)</td><td class="num" style="text-align:left">&lt; 1000ms</td></tr>
+            <tr><td>Google Web Vitals</td><td>Good response time (INP)</td><td class="num" style="text-align:left">&lt; 200ms</td></tr>
+            <tr><td>Google Web Vitals</td><td>Poor response time (INP)</td><td class="num" style="text-align:left">&gt; 500ms</td></tr>
+            <tr><td>AWS Well-Architected</td><td>Latency variance</td><td class="num" style="text-align:left">p95 within 2× p50</td></tr>
+            <tr><td>General industry</td><td>Availability ("three nines")</td><td class="num" style="text-align:left">99.9% uptime</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="rpt-footer">
+        <div>LoadForge v2.0 · Browser-native load testing</div>
+        <div class="sig">Report prepared by <strong>Gaurav Patil</strong> · ${formatDate(testedAt)}</div>
       </div>
     </div>
   `;
 }
 
 function openReport() {
-  $('reportContent').innerHTML = buildReport();
+  $('reportDoc').innerHTML = buildReport();
   $('reportModal').classList.add('show');
+  $('reportModal').scrollTop = 0;
 }
 function closeReport() { $('reportModal').classList.remove('show'); }
 
 function exportJSON() {
   const data = {
+    meta: {
+      tool: 'LoadForge v2.0',
+      author: 'Gaurav Patil',
+      generatedAt: new Date().toISOString(),
+    },
     config: state.config,
     summary: {
       totalRequests: state.totalReqs,
@@ -1470,16 +2209,20 @@ function exportJSON() {
       failed: state.failReqs,
       errorRate: state.totalReqs ? state.failReqs/state.totalReqs : 0,
       durationSec: (state.endTime - state.startTime)/1000,
+      bytesReceived: state.bytesReceived,
       latency: {
         min: state.latencies.length ? Math.min(...state.latencies) : null,
         avg: mean(state.latencies),
+        stddev: stddev(state.latencies),
         p50: percentile(state.latencies,50),
+        p75: percentile(state.latencies,75),
         p90: percentile(state.latencies,90),
         p95: percentile(state.latencies,95),
         p99: percentile(state.latencies,99),
         max: state.latencies.length ? Math.max(...state.latencies) : null,
       },
       statusCodes: state.statusCodes,
+      errors: state.errors,
     },
     timeSeries: state.timeSeries,
   };
@@ -1489,10 +2232,26 @@ function exportJSON() {
   a.href = url; a.download = `loadforge-report-${Date.now()}.json`;
   a.click();
   URL.revokeObjectURL(url);
+  toast('JSON exported');
+}
+
+function exportCSV() {
+  const header = 'elapsed_sec,rps,p50_ms,p95_ms,p99_ms,error_rate_pct\n';
+  const rows = state.timeSeries.map(t =>
+    `${t.t},${t.rps},${t.p50?.toFixed(1)||''},${t.p95?.toFixed(1)||''},${t.p99?.toFixed(1)||''},${t.errRate?.toFixed(2)||'0'}`
+  ).join('\n');
+  const blob = new Blob([header + rows], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `loadforge-timeseries-${Date.now()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('CSV exported');
 }
 
 window.closeReport = closeReport;
 window.exportJSON = exportJSON;
+window.exportCSV = exportCSV;
 
 /* ========== WIRING ========== */
 $('runBtn').onclick = () => state.running ? stopTest() : startTest();
@@ -1502,6 +2261,7 @@ $('clearBtn').onclick = () => {
   Object.assign(state, {
     totalReqs: 0, successReqs: 0, failReqs: 0, latencies: [],
     timeSeries: [], statusCodes: {}, recentLog: [], rpsWindow: [],
+    bytesReceived: 0, errors: {}, assertionFails: 0,
   });
   latencyChart.clear(); rpsChart.clear(); histChart.clear();
   updateKPIs(); updateStatusBars();
@@ -1514,6 +2274,8 @@ $('clearBtn').onclick = () => {
 
 $('reportModal').onclick = (e) => { if (e.target === $('reportModal')) closeReport(); };
 
+// default assertion
+addAssertion('status_lt', '400');
 updateHint();
 </script>
 </body>
